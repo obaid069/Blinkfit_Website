@@ -1,11 +1,8 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Blog from './models/Blog.js';
 
-// Load environment variables
 dotenv.config();
-
-// Sample blog data
 const sampleBlogs = [
   {
     title: "The Complete Guide to Digital Eye Strain: Causes, Symptoms, and Solutions",
@@ -44,7 +41,7 @@ If symptoms persist despite following these guidelines, consult with an eye care
     author: "Dr. Emily Chen",
     category: "Eye Health",
     tags: ["digital eye strain", "computer vision", "eye care", "productivity"],
-    featuredImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    featuredImage: "https:
     readTime: 8,
     published: true,
     featured: true
@@ -84,7 +81,7 @@ While AI eye care offers many benefits, it's important to ensure that systems pr
     author: "Dr. Michael Rodriguez",
     category: "Technology",
     tags: ["artificial intelligence", "eye care", "technology", "innovation"],
-    featuredImage: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    featuredImage: "https:
     readTime: 6,
     published: true,
     featured: true
@@ -156,7 +153,7 @@ Regular practice can lead to:
     author: "Sarah Johnson, OD",
     category: "Tips & Tricks",
     tags: ["eye exercises", "eye strain relief", "wellness", "productivity"],
-    featuredImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    featuredImage: "https:
     readTime: 5,
     published: true,
     featured: false
@@ -232,7 +229,7 @@ If you're considering blue light glasses:
     author: "Dr. James Wilson",
     category: "Eye Health",
     tags: ["blue light", "eye glasses", "science", "research"],
-    featuredImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    featuredImage: "https:
     readTime: 7,
     published: true,
     featured: true
@@ -346,7 +343,7 @@ Remember, small changes can make a big difference in your eye comfort and overal
     author: "Lisa Martinez, Ergonomist",
     category: "Lifestyle",
     tags: ["home office", "ergonomics", "workplace wellness", "setup"],
-    featuredImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    featuredImage: "https:
     readTime: 9,
     published: true,
     featured: false
@@ -501,14 +498,13 @@ Remember, something as simple as paying attention to your blinking can significa
     author: "Dr. Robert Kim",
     category: "Eye Health",
     tags: ["blinking", "eye anatomy", "tear film", "research"],
-    featuredImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    featuredImage: "https:
     readTime: 10,
     published: true,
     featured: false
   }
 ];
 
-// Helper function to generate slug from title
 function generateSlug(title) {
   return title
     .toLowerCase()
@@ -517,38 +513,26 @@ function generateSlug(title) {
     .trim();
 }
 
-// Connect to MongoDB and seed the database
 async function seedDatabase() {
   try {
-    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
-
-    // Clear existing blogs
     await Blog.deleteMany({});
     console.log('Cleared existing blog data');
-
-    // Add slugs to sample blogs
     const blogsWithSlugs = sampleBlogs.map(blog => ({
       ...blog,
       slug: generateSlug(blog.title)
     }));
-
-    // Insert sample blogs
     const createdBlogs = await Blog.insertMany(blogsWithSlugs);
-    console.log(`✅ Successfully seeded ${createdBlogs.length} blog posts`);
-
-    // Display created blogs
+    console.log(`âœ… Successfully seeded ${createdBlogs.length} blog posts`);
     createdBlogs.forEach(blog => {
-      console.log(`📝 Created: "${blog.title}" (${blog.category})`);
+      console.log(`ðŸ“ Created: "${blog.title}" (${blog.category})`);
     });
-
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    console.error('âŒ Error seeding database:', error);
     process.exit(1);
   }
 }
 
-// Run the seed function
 seedDatabase();

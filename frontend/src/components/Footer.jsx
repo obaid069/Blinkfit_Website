@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Send } from 'lucide-react';
 import { subscribeToNewsletter } from '../utils/api';
@@ -56,11 +56,11 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#1A1A1A] text-white border-t-2 border-[#4CAF50] w-full relative z-10 ">
-      {/* Main Footer */}
+      {}
       <div className="w-full px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
         <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {/* Company Info */}
+          {}
           <div className="col-span-1 lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
               <Eye className="w-8 h-8 text-[#4CAF50]" />
@@ -70,8 +70,8 @@ const Footer = () => {
               AI-powered eye health monitoring that protects your vision in the digital age. 
               Smart, proactive, and personalized eye care.
             </p>
-            
-            {/* Contact Info */}
+
+            {}
             <div className="space-y-2">
               <div className="flex items-center text-sm text-[#B3B3B3]">
                 <Mail className="w-4 h-4 mr-2" />
@@ -88,7 +88,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Product Links */}
+          {}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-[#B3B3B3] mb-4">
               Product
@@ -107,7 +107,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-[#B3B3B3] mb-4">
               Company
@@ -126,7 +126,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter */}
+          {}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-[#B3B3B3] mb-4">
               Stay Updated
@@ -134,7 +134,7 @@ const Footer = () => {
             <p className="text-sm text-[#B3B3B3] mb-4">
               Get the latest eye health tips and app updates delivered to your inbox.
             </p>
-            
+
             <form onSubmit={handleNewsletterSubmit} className="space-y-2">
               <div className="flex">
                 <input
@@ -160,7 +160,7 @@ const Footer = () => {
               )}
             </form>
 
-            {/* Social Links */}
+            {}
             <div className="mt-6">
               <h4 className="text-sm font-semibold text-[#B3B3B3] mb-3">Follow Us</h4>
               <div className="flex space-x-3">
@@ -184,12 +184,12 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Bar */}
+      {}
       <div className="border-t border-[#333333] w-full bg-[#121212]">
         <div className="max-w-7xl mx-auto w-full px-6 sm:px-8 lg:px-12 py-8">
           <div className="md:flex md:items-center md:justify-between">
             <div className="text-sm text-[#B3B3B3]">
-              © {new Date().getFullYear()} BlinkFit. All rights reserved.
+              Â© {new Date().getFullYear()} BlinkFit. All rights reserved.
             </div>
             <div className="mt-4 md:mt-0">
               <div className="flex space-x-6 text-sm text-[#B3B3B3]">

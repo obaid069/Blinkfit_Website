@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -18,7 +18,6 @@ function AppContent() {
   const location = useLocation()
   const isHomePage = location.pathname === '/'
 
-  // Close sidebar on mobile by default
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
@@ -33,19 +32,27 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
+  }, [location.pathname])
+
   return (
     <div className="min-h-screen bg-[#121212] relative flex flex-col">
       <Header />
-      
-      {/* Sidebar - show on all pages */}
+
+      {}
       <Sidebar 
         isOpen={isSidebarOpen} 
         setIsOpen={setIsSidebarOpen} 
         currentSection={currentSection}
         onSectionChange={setCurrentSection}
       />
-      
-      {/* Main Content Area */}
+
+      {}
       <div className={`flex-1 transition-all duration-300 ease-in-out ${
         isSidebarOpen
           ? 'lg:ml-80' 
@@ -61,8 +68,8 @@ function AppContent() {
           <Route path="/insights" element={<EyeHealthInsights />} />
           <Route path="/insights/:id" element={<BlogPost />} />
         </Routes>
-        
-        {/* Footer */}
+
+        {}
         <Footer />
       </div>
     </div>

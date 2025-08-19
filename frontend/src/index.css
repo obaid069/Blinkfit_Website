@@ -1,6 +1,5 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
-/* Custom responsive utilities */
 @layer utilities {
   .line-clamp-2 {
     display: -webkit-box;
@@ -9,7 +8,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -17,98 +16,89 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
-  /* Custom responsive breakpoints */
+
   .container-xs {
     max-width: 475px;
   }
-  
-  /* Smooth scrolling */
+
   html {
     scroll-behavior: smooth;
   }
-  
-  /* Custom responsive text sizes */
+
   .text-responsive-xs {
     font-size: clamp(0.75rem, 2vw, 0.875rem);
   }
-  
+
   .text-responsive-sm {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
   }
-  
+
   .text-responsive-base {
     font-size: clamp(1rem, 3vw, 1.125rem);
   }
-  
+
   .text-responsive-lg {
     font-size: clamp(1.125rem, 3.5vw, 1.25rem);
   }
-  
+
   .text-responsive-xl {
     font-size: clamp(1.25rem, 4vw, 1.5rem);
   }
-  
+
   .text-responsive-2xl {
     font-size: clamp(1.5rem, 5vw, 2rem);
   }
-  
+
   .text-responsive-3xl {
     font-size: clamp(1.875rem, 6vw, 2.5rem);
   }
-  
+
   .text-responsive-4xl {
     font-size: clamp(2.25rem, 7vw, 3rem);
   }
-  
+
   .text-responsive-5xl {
     font-size: clamp(2.5rem, 8vw, 3.75rem);
   }
 }
 
-/* Responsive images */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Enhanced responsive breakpoints */
-
-/* Extra small devices (320px and up) */
 @media (max-width: 480px) {
   .px-4 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
-  
+
   .text-4xl {
     font-size: 1.875rem;
     line-height: 1.2;
   }
-  
+
   .text-5xl {
     font-size: 2.25rem;
     line-height: 1.1;
   }
-  
+
   .text-6xl {
     font-size: 2.75rem;
     line-height: 1.05;
   }
-  
-  /* Smaller containers for mobile */
+
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
-  /* Better mobile spacing */
+
   .space-y-6 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(1rem * var(--tw-space-y-reverse));
   }
-  
+
   .space-y-8 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
     margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
@@ -116,60 +106,56 @@ img {
   }
 }
 
-/* Very small devices (320px and below) */
 @media (max-width: 320px) {
   .text-base {
     font-size: 0.875rem;
   }
-  
+
   .text-lg {
     font-size: 1rem;
   }
-  
+
   .text-xl {
     font-size: 1.125rem;
   }
-  
+
   .px-6 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
-  
+
   .py-12 {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
-  
+
   .py-16 {
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
   }
-  
+
   .py-20 {
     padding-top: 3rem;
     padding-bottom: 3rem;
   }
 }
 
-/* Medium screens optimizations */
 @media (min-width: 768px) and (max-width: 1024px) {
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* Large screens optimizations */
 @media (min-width: 1024px) {
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  
+
   .grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-/* Touch-friendly interactive elements */
 @media (max-width: 768px) {
   button, 
   a[role="button"],
@@ -177,38 +163,34 @@ img {
     min-height: 44px;
     min-width: 44px;
   }
-  
-  /* Larger tap targets */
+
   .btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
   }
-  
-  /* Better mobile form elements */
+
   input, 
   textarea, 
   select {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; 
     padding: 0.75rem;
   }
 }
 
-/* Orientation-specific styles */
 @media screen and (orientation: landscape) and (max-height: 500px) {
   .py-20 {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
-  
+
   .py-16 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
   }
 }
 
-/* High DPI displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* Sharper borders on high DPI */
+
   .border {
     border-width: 0.5px;
   }

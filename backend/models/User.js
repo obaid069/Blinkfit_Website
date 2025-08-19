@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
       return !this.isNewsletterOnly;
     },
     minlength: [6, 'Password must be at least 6 characters long'],
-    select: false, // Don't include password in queries by default
+    select: false,
   },
   role: {
     type: String,
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
   },
   isNewsletterOnly: {
     type: Boolean,
-    default: false, // True for users who only subscribed to newsletter
+    default: false,
   },
   emailVerified: {
     type: Boolean,
@@ -99,46 +99,35 @@ const userSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Indexes for efficient querying
 userSchema.index({ email: 1 });
 userSchema.index({ role: 1, isActive: 1 });
 userSchema.index({ isNewsletterSubscribed: 1 });
 userSchema.index({ createdAt: -1 });
 
-// Hash password before saving
 userSchema.pre('save', async function(next) {
-  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
-
-  // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Generate password reset token
 userSchema.methods.createPasswordResetToken = function() {
   const resetToken = Math.random().toString(36).substring(2, 15) + 
                     Math.random().toString(36).substring(2, 15);
-
   this.passwordResetToken = bcrypt.hashSync(resetToken, 10);
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
 
-// Method to update last login
 userSchema.methods.updateLastLogin = function() {
   this.lastLoginAt = new Date();
   return this.save({ validateBeforeSave: false });
 };
 
-// Static method to create newsletter-only user
 userSchema.statics.createNewsletterUser = function(email, name) {
   return this.create({
     email,

@@ -1,10 +1,9 @@
-import express from 'express';
+﻿import express from 'express';
 import { body, query, param, validationResult } from 'express-validator';
 import Blog from '../models/Blog.js';
 
 const router = express.Router();
 
-// Validation middleware
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -16,8 +15,6 @@ const handleValidationErrors = (req, res, next) => {
   }
   next();
 };
-
-// GET /api/blogs - Get all published blogs with pagination and filtering
 router.get('/', [
   query('page').optional().isInt({ min: 1 }).toInt(),
   query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
@@ -34,9 +31,8 @@ router.get('/', [
       sort = 'latest'
     } = req.query;
 
-    // Build query
     const query = { published: true };
-    
+
     if (category) {
       query.category = category;
     }
@@ -45,7 +41,6 @@ router.get('/', [
       query.$text = { $search: search };
     }
 
-    // Build sort options
     let sortOptions = {};
     switch (sort) {
       case 'popular':
@@ -59,13 +54,12 @@ router.get('/', [
         sortOptions = { publishedAt: -1 };
     }
 
-    // Execute query with pagination
     const skip = (page - 1) * limit;
     const blogs = await Blog.find(query)
       .sort(sortOptions)
       .skip(skip)
       .limit(limit)
-      .select('-content') // Exclude full content for list view
+      .select('-content') 
       .lean();
 
     const totalBlogs = await Blog.countDocuments(query);
@@ -94,7 +88,6 @@ router.get('/', [
   }
 });
 
-// GET /api/blogs/featured - Get featured blogs (most popular)
 router.get('/featured', async (req, res) => {
   try {
     const featuredBlogs = await Blog.find({ published: true })
@@ -117,7 +110,6 @@ router.get('/featured', async (req, res) => {
   }
 });
 
-// GET /api/blogs/categories - Get all categories with counts
 router.get('/categories', async (req, res) => {
   try {
     const categories = await Blog.aggregate([
@@ -143,7 +135,6 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// GET /api/blogs/:slug - Get single blog by slug
 router.get('/:slug', [
   param('slug').isString().trim().notEmpty(),
 ], handleValidationErrors, async (req, res) => {
@@ -159,10 +150,8 @@ router.get('/:slug', [
       });
     }
 
-    // Increment views
     await blog.incrementViews();
 
-    // Get related blogs (same category, excluding current)
     const relatedBlogs = await Blog.find({
       category: blog.category,
       published: true,
@@ -190,7 +179,6 @@ router.get('/:slug', [
   }
 });
 
-// POST /api/blogs/:id/like - Like a blog post
 router.post('/:id/like', [
   param('id').isMongoId(),
 ], handleValidationErrors, async (req, res) => {

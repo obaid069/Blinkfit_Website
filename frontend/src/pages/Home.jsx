@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -90,9 +90,9 @@ const Home = () => {
 
   return (
     <div className="w-full bg-[#121212] min-h-screen relative">
-        {/* Hero Section */}
+        {}
         <section id="hero" className="relative bg-gradient-to-br from-[#1E1E1E] to-[#121212] overflow-hidden w-full min-h-screen flex items-center">
-          {/* Particles Background */}
+          {}
           <div className="absolute inset-0 w-full h-full">
             <Particles
               particleColors={['#4CAF50', '#45a049', '#66BB6A']}
@@ -106,10 +106,10 @@ const Home = () => {
               className="w-full h-full"
             />
           </div>
-          
-          <div className="relative px-6 py-24 w-full z-10">
+
+          <div className="relative px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full z-10">
             <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ const Home = () => {
                   BlinkFit uses advanced artificial intelligence to monitor your eye health in real-time, 
                   preventing digital eye strain before it happens. Smart, proactive, and personalized.
                 </p>
-                
+
                 <div className="flex flex-col sm:flex-row gap-4 mb-8">
                   <button className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-[#4CAF50] rounded-lg hover:bg-[#45a049] transition-colors duration-200 group">
                     <Download className="w-5 h-5 mr-2" />
@@ -137,7 +137,7 @@ const Home = () => {
                   </button>
                 </div>
 
-                {/* Stats */}
+                {}
                 <div className="grid grid-cols-3 gap-6 pt-8 border-t border-[#333333]">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-white">{stats.downloads}</div>
@@ -160,8 +160,8 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="relative flex justify-center"
               >
-                {/* Phone Mockup */}
-                <div className="relative w-96 h-[28rem] bg-[#333333] rounded-3xl p-3">
+                {}
+                <div className="relative w-80 sm:w-96 h-[24rem] sm:h-[28rem] bg-[#333333] rounded-3xl p-3 max-w-full">
                   <div className="w-full h-full bg-gradient-to-b from-[#4CAF50] to-[#45a049] rounded-2xl flex items-center justify-center">
                     <div className="text-center text-white">
                       <Eye className="w-16 h-16 mx-auto mb-4 animate-pulse" />
@@ -170,8 +170,8 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-                
-                {/* Floating Elements */}
+
+                {}
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
@@ -199,7 +199,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Features Section */}
+        {}
         <section id="features" className="py-24 bg-[#121212] w-full">
           <div className="px-6 w-full max-w-7xl mx-auto">
             <div className="text-center mb-20">
@@ -212,7 +212,7 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
@@ -239,7 +239,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* How it Works Section */}
+        {}
         <section id="how-it-works" className="py-24 bg-[#1E1E1E] w-full">
           <div className="px-6 w-full max-w-7xl mx-auto">
             <div className="text-center mb-20">
@@ -285,7 +285,7 @@ const Home = () => {
                   <p className="text-[#B3B3B3] leading-relaxed">
                     {step.description}
                   </p>
-                  
+
                   {index < 2 && (
                     <ChevronRight className="hidden md:block absolute top-8 -right-6 w-6 h-6 text-[#4CAF50]" />
                   )}
@@ -295,7 +295,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
+        {}
         <section id="testimonials" className="py-24 bg-[#121212] w-full">
           <div className="px-6 w-full max-w-7xl mx-auto">
             <div className="text-center mb-20">
@@ -332,7 +332,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Featured Blog Posts */}
+        {}
         {featuredBlogs.length > 0 && (
           <section id="insights" className="py-24 bg-[#1E1E1E] w-full">
             <div className="px-6 w-full max-w-7xl mx-auto">
@@ -394,7 +394,7 @@ const Home = () => {
           </section>
         )}
 
-        {/* CTA Section */}
+        {}
         <section id="download" className="py-24 bg-[#4CAF50] w-full">
           <div className="text-center px-6 w-full max-w-7xl mx-auto">
             <motion.div

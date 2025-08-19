@@ -1,4 +1,4 @@
-.particles-container {
+﻿.particles-container {
   width: 100%;
   height: 100%;
   position: relative;
@@ -10,30 +10,25 @@
   height: 100% !important;
   display: block;
   pointer-events: auto;
-  
-  /* Ensure smooth rendering */
+
   image-rendering: -webkit-optimize-contrast;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
-  
-  /* Hardware acceleration */
+
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   will-change: transform;
-  
-  /* Blend mode for better particle rendering */
+
   mix-blend-mode: screen;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .particles-container canvas {
-    /* Reduce particle quality on mobile for better performance */
+
     image-rendering: auto;
   }
 }
 
-/* Disable interactions on touch devices for better performance */
 @media (hover: none) and (pointer: coarse) {
   .particles-container canvas {
     pointer-events: none;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -25,7 +25,6 @@ const EyeHealthInsights = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
 
-  // Sample articles data (replace with API call later)
   const sampleArticles = [
     {
       id: 1,
@@ -36,7 +35,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Sarah Johnson",
       publishedAt: "2024-01-15",
       readTime: "5 min read",
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=400&fit=crop",
+      image: "https:
       tags: ["Digital Strain", "Prevention", "Computer Vision"],
       featured: true
     },
@@ -49,7 +48,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Michael Chen",
       publishedAt: "2024-01-12",
       readTime: "3 min read",
-      image: "https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?w=800&h=400&fit=crop",
+      image: "https:
       tags: ["20-20-20 Rule", "Eye Exercises", "Workplace Health"],
       featured: true
     },
@@ -62,7 +61,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Emily Rodriguez",
       publishedAt: "2024-01-10",
       readTime: "7 min read",
-      image: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=800&h=400&fit=crop",
+      image: "https:
       tags: ["Blue Light", "Research", "Sleep Health"],
       featured: false
     },
@@ -75,7 +74,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Robert Kim",
       publishedAt: "2024-01-08",
       readTime: "6 min read",
-      image: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=800&h=400&fit=crop",
+      image: "https:
       tags: ["Nutrition", "Vitamins", "Eye Health"],
       featured: false
     },
@@ -88,7 +87,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Lisa Wang",
       publishedAt: "2024-01-05",
       readTime: "4 min read",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop",
+      image: "https:
       tags: ["Eye Exercises", "Daily Routine", "Vision Care"],
       featured: true
     },
@@ -101,7 +100,7 @@ const EyeHealthInsights = () => {
       author: "Dr. James Wilson",
       publishedAt: "2024-01-03",
       readTime: "5 min read",
-      image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=800&h=400&fit=crop",
+      image: "https:
       tags: ["Ergonomics", "Workspace", "Computer Setup"],
       featured: false
     }
@@ -141,7 +140,7 @@ const EyeHealthInsights = () => {
   ];
 
   useEffect(() => {
-    // Simulate API call
+
     setTimeout(() => {
       setArticles(sampleArticles);
       setFilteredArticles(sampleArticles);
@@ -152,12 +151,10 @@ const EyeHealthInsights = () => {
   useEffect(() => {
     let filtered = articles;
 
-    // Filter by category
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(article => article.category === selectedCategory);
     }
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(article =>
         article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -173,7 +170,7 @@ const EyeHealthInsights = () => {
 
   return (
     <div className="pt-16 bg-[#121212] min-h-screen">
-      {/* Hero Section */}
+      {}
       <section className="bg-gradient-to-br from-[#1E1E1E] to-[#121212] text-white">
         <div className="max-w-7xl mx-auto px-6 py-20">
           <motion.div
@@ -189,8 +186,8 @@ const EyeHealthInsights = () => {
               Discover expert advice, research-backed tips, and practical solutions to protect 
               and improve your eye health in the digital age.
             </p>
-            
-            {/* Search Bar */}
+
+            {}
             <div className="max-w-2xl mx-auto relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -205,7 +202,7 @@ const EyeHealthInsights = () => {
         </div>
       </section>
 
-      {/* Quick Tips Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
@@ -241,7 +238,7 @@ const EyeHealthInsights = () => {
         </div>
       </section>
 
-      {/* Featured Articles */}
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
@@ -278,7 +275,7 @@ const EyeHealthInsights = () => {
                     <Star className="w-5 h-5 text-yellow-400 fill-current" />
                   </div>
                 </div>
-                
+
                 <div className="p-6">
                   <div className="flex items-center text-sm text-[#B3B3B3] mb-3">
                     <User className="w-4 h-4 mr-1" />
@@ -288,15 +285,15 @@ const EyeHealthInsights = () => {
                     <Clock className="w-4 h-4 mr-1" />
                     <span>{article.readTime}</span>
                   </div>
-                  
+
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-[#4CAF50] transition-colors duration-200">
                     {article.title}
                   </h3>
-                  
+
                   <p className="text-[#B3B3B3] mb-4 line-clamp-3">
                     {article.excerpt}
                   </p>
-                  
+
                   <div className="flex flex-wrap gap-2 mb-4">
                     {article.tags.slice(0, 2).map((tag) => (
                       <span
@@ -307,7 +304,7 @@ const EyeHealthInsights = () => {
                       </span>
                     ))}
                   </div>
-                  
+
                   <Link
                     to={`/insights/${article.id}`}
                     className="inline-flex items-center text-[#4CAF50] hover:text-[#45a049] font-medium group-hover:translate-x-1 transition-transform duration-200"
@@ -322,18 +319,18 @@ const EyeHealthInsights = () => {
         </div>
       </section>
 
-      {/* All Articles Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar */}
+            {}
             <aside className="lg:w-1/4">
               <div className="bg-[#121212] border border-[#333333] rounded-xl p-6 sticky top-24">
                 <h3 className="text-lg font-semibold text-white mb-6 flex items-center">
                   <Filter className="w-5 h-5 mr-2" />
                   Categories
                 </h3>
-                
+
                 <nav className="space-y-2">
                   {categories.map((category) => {
                     const Icon = category.icon;
@@ -363,7 +360,7 @@ const EyeHealthInsights = () => {
               </div>
             </aside>
 
-            {/* Main Content */}
+            {}
             <main className="lg:w-3/4">
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-2">
@@ -399,7 +396,7 @@ const EyeHealthInsights = () => {
                             className="w-full h-40 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
-                        
+
                         <div className="md:w-2/3">
                           <div className="flex items-center text-sm text-[#B3B3B3] mb-3">
                             <span className="bg-[#4CAF50] bg-opacity-20 text-[#4CAF50] px-2 py-1 rounded text-xs font-medium mr-3">
@@ -412,15 +409,15 @@ const EyeHealthInsights = () => {
                             <Clock className="w-4 h-4 mr-1" />
                             <span>{article.readTime}</span>
                           </div>
-                          
+
                           <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-[#4CAF50] transition-colors duration-200">
                             {article.title}
                           </h3>
-                          
+
                           <p className="text-[#B3B3B3] mb-4">
                             {article.excerpt}
                           </p>
-                          
+
                           <div className="flex items-center justify-between">
                             <div className="flex flex-wrap gap-2">
                               {article.tags.slice(0, 3).map((tag) => (
@@ -432,7 +429,7 @@ const EyeHealthInsights = () => {
                                 </span>
                               ))}
                             </div>
-                            
+
                             <Link
                               to={`/insights/${article.id}`}
                               className="inline-flex items-center text-[#4CAF50] hover:text-[#45a049] font-medium group-hover:translate-x-1 transition-transform duration-200"
@@ -469,7 +466,7 @@ const EyeHealthInsights = () => {
         </div>
       </section>
 
-      {/* Newsletter Section */}
+      {}
       <section className="py-16 bg-gradient-to-br from-[#4CAF50] to-[#45a049]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <motion.div
@@ -483,7 +480,7 @@ const EyeHealthInsights = () => {
             <p className="text-xl text-green-100 mb-8">
               Get weekly insights and tips delivered to your inbox
             </p>
-            
+
             <div className="max-w-md mx-auto flex gap-4">
               <input
                 type="email"

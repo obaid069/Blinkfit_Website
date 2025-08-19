@@ -1,40 +1,40 @@
-# 👁️ BlinkFit - AI-Powered Eye Health Monitoring
+﻿# ðŸ‘ï¸ BlinkFit - AI-Powered Eye Health Monitoring
 
 ![BlinkFit Logo](frontend/src/assets/logo.png)
 
 **BlinkFit** is a comprehensive web application designed to protect your vision in the digital age. Using advanced AI technology, BlinkFit monitors your eye health, provides personalized recommendations, and helps prevent digital eye strain.
 
-## 🌟 Features
+## ðŸŒŸ Features
 
-### 🤖 AI-Powered Monitoring
+### ðŸ¤– AI-Powered Monitoring
 - Real-time blink rate detection using computer vision
 - Advanced algorithms to detect early signs of eye strain
 - Privacy-first approach with local processing
 
-### 📊 Comprehensive Analytics
+### ðŸ“Š Comprehensive Analytics
 - Detailed insights into your digital eye health
 - Weekly and monthly reports with trends
 - Goal setting and progress tracking
 - Custom metrics based on your usage patterns
 
-### 🏃‍♂️ Smart Eye Exercises
+### ðŸƒâ€â™‚ï¸ Smart Eye Exercises
 - Personalized exercise routines based on your needs
 - Science-backed exercises designed by eye care professionals
 - Progressive difficulty adjustment
 - Quick 2-5 minute sessions that fit your schedule
 
-### 🔔 Intelligent Notifications
+### ðŸ”” Intelligent Notifications
 - Context-aware break reminders
 - Customizable timing based on your work patterns
 - Non-intrusive design that doesn't interrupt productivity
 
-### 📱 Cross-Platform Support
+### ðŸ“± Cross-Platform Support
 - Native desktop apps for Windows, Mac, and Linux
 - Full-featured mobile apps for iOS and Android
 - Web-based dashboard for comprehensive management
 - Dark mode support for reduced eye strain
 
-## 🏗️ Tech Stack
+## ðŸ—ï¸ Tech Stack
 
 ### Frontend
 - **React 18** - Modern UI framework
@@ -57,7 +57,7 @@
 - **Express Rate Limit** - API rate limiting
 - **Nodemailer** - Email functionality
 
-## 🚀 Quick Start
+## ðŸš€ Quick Start
 
 ### Prerequisites
 - Node.js (v16 or higher)
@@ -76,14 +76,14 @@
    ```bash
    cd backend
    npm install
-   
+
    # Create .env file with your configuration
    cp .env.example .env
    # Edit .env with your MongoDB URI and other settings
-   
+
    # Seed the database with sample data
    npm run seed
-   
+
    # Start the development server
    npm run dev
    ```
@@ -92,10 +92,10 @@
    ```bash
    cd frontend
    npm install
-   
+
    # Create .env file for API configuration
    echo "VITE_API_URL=http://localhost:5000/api" > .env
-   
+
    # Start the development server
    npm run dev
    ```
@@ -104,32 +104,32 @@
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:5000
 
-## 📁 Project Structure
+## ðŸ“ Project Structure
 
 ```
 Blinkfit_Website/
-├── frontend/                 # React frontend application
-│   ├── public/              # Static assets
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── utils/          # API utilities and helpers
-│   │   ├── assets/         # Images, logos, etc.
-│   │   └── App.jsx         # Main application component
-│   ├── package.json
-│   └── vite.config.js
-├── backend/                 # Node.js backend API
-│   ├── models/             # MongoDB schemas
-│   ├── routes/             # API route handlers
-│   ├── middleware/         # Custom middleware
-│   ├── utils/             # Utility functions
-│   ├── seed.js            # Database seeding script
-│   ├── server.js          # Express server setup
-│   └── package.json
-└── README.md
+â”œâ”€â”€ frontend/                 # React frontend application
+â”‚   â”œâ”€â”€ public/              # Static assets
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ components/      # Reusable UI components
+â”‚   â”‚   â”œâ”€â”€ pages/          # Page components
+â”‚   â”‚   â”œâ”€â”€ utils/          # API utilities and helpers
+â”‚   â”‚   â”œâ”€â”€ assets/         # Images, logos, etc.
+â”‚   â”‚   â””â”€â”€ App.jsx         # Main application component
+â”‚   â”œâ”€â”€ package.json
+â”‚   â””â”€â”€ vite.config.js
+â”œâ”€â”€ backend/                 # Node.js backend API
+â”‚   â”œâ”€â”€ models/             # MongoDB schemas
+â”‚   â”œâ”€â”€ routes/             # API route handlers
+â”‚   â”œâ”€â”€ middleware/         # Custom middleware
+â”‚   â”œâ”€â”€ utils/             # Utility functions
+â”‚   â”œâ”€â”€ seed.js            # Database seeding script
+â”‚   â”œâ”€â”€ server.js          # Express server setup
+â”‚   â””â”€â”€ package.json
+â””â”€â”€ README.md
 ```
 
-## 🔧 Configuration
+## ðŸ”§ Configuration
 
 ### Backend Environment Variables
 ```env
@@ -159,7 +159,7 @@ FRONTEND_URL=http://localhost:5173
 VITE_API_URL=http://localhost:5000/api
 ```
 
-## 📊 API Endpoints
+## ðŸ“Š API Endpoints
 
 ### Blog Routes
 - `GET /api/blogs` - Get all published blogs with pagination and filtering
@@ -177,7 +177,7 @@ VITE_API_URL=http://localhost:5000/api
 - `POST /api/users/newsletter/unsubscribe` - Unsubscribe from newsletter
 - `GET /api/users/newsletter/stats` - Get newsletter statistics
 
-## 🎨 Design System
+## ðŸŽ¨ Design System
 
 ### Colors
 - **Primary Green**: #4CAF50
@@ -193,7 +193,7 @@ VITE_API_URL=http://localhost:5000/api
 - **Body**: Inter, system-ui
 - **Monospace**: 'Fira Code', monospace
 
-## 🚀 Deployment
+## ðŸš€ Deployment
 
 ### Frontend (Netlify/Vercel)
 ```bash
@@ -209,7 +209,7 @@ cd backend
 npm start
 ```
 
-## 🧪 Testing
+## ðŸ§ª Testing
 
 ### Frontend Tests
 ```bash
@@ -223,7 +223,7 @@ cd backend
 npm run test
 ```
 
-## 📈 Performance
+## ðŸ“ˆ Performance
 
 - **Lighthouse Score**: 95+ performance rating
 - **First Contentful Paint**: < 1.5s
@@ -231,7 +231,7 @@ npm run test
 - **Bundle Size**: Optimized with code splitting
 - **API Response Time**: < 200ms average
 
-## 🔐 Security Features
+## ðŸ” Security Features
 
 - JWT-based authentication
 - Password hashing with bcryptjs
@@ -241,7 +241,7 @@ npm run test
 - XSS protection with Helmet
 - Environment variable protection
 
-## 🤝 Contributing
+## ðŸ¤ Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -249,28 +249,28 @@ npm run test
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## ðŸ“ License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Team
+## ðŸ‘¥ Team
 
 - **Obaid** - Full Stack Developer
 - Email: contact@blinkfit.com
 - GitHub: [@obaid069](https://github.com/obaid069)
 
-## 🙏 Acknowledgments
+## ðŸ™ Acknowledgments
 
 - Eye care professionals who provided medical insights
 - The open-source community for amazing libraries
 - Beta testers who provided valuable feedback
 - UI/UX inspiration from modern health apps
 
-## 📞 Support
+## ðŸ“ž Support
 
 For support, email support@blinkfit.com or join our Discord community.
 
-## 🔗 Links
+## ðŸ”— Links
 
 - [Live Demo](https://blinkfit.com)
 - [Documentation](https://docs.blinkfit.com)
@@ -279,4 +279,4 @@ For support, email support@blinkfit.com or join our Discord community.
 
 ---
 
-**Made with ❤️ for your eye health**
+**Made with â¤ï¸ for your eye health**

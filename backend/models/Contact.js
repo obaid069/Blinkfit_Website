@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema({
   name: {
@@ -67,17 +67,14 @@ const contactSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Indexes for efficient querying
 contactSchema.index({ email: 1 });
 contactSchema.index({ status: 1, createdAt: -1 });
 contactSchema.index({ type: 1, status: 1 });
 
-// Virtual for display name
 contactSchema.virtual('displayName').get(function() {
   return this.name || 'Anonymous User';
 });
 
-// Method to mark as replied
 contactSchema.methods.markAsReplied = function() {
   this.replied = true;
   this.repliedAt = new Date();

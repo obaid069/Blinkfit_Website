@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Eye, Download, Home, Zap, Info, BookOpen, Mail, Lightbulb } from 'lucide-react';
 import logo from '../assets/logo.png';
@@ -17,8 +17,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Navigation links removed - sidebar handles navigation
-
   const isCurrentPath = (path) => {
     if (path === '/') {
       return location.pathname === '/';
@@ -34,7 +32,7 @@ const Header = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-20">
-          {/* Logo */}
+          {}
           <Link to="/" className="flex items-center space-x-3 z-50">
             <div className="relative">
               <img 
@@ -46,15 +44,15 @@ const Header = () => {
             <span className="text-xl font-bold text-white tracking-tight">BlinkFit</span>
           </Link>
 
-          {/* Desktop Navigation - Removed, handled by sidebar */}
+          {}
 
-          {/* Desktop CTA + Mobile Menu Button */}
+          {}
           <div className="flex items-center space-x-4">
             <button className="hidden sm:inline-flex items-center px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#4CAF50] to-[#45a049] rounded-lg hover:from-[#45a049] hover:to-[#4CAF50] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
               <Download className="w-4 h-4 mr-2" />
               <span>Download App</span>
             </button>
-            
+
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-lg text-[#B3B3B3] hover:text-white hover:bg-[#333333]/60 transition-colors duration-200"
@@ -65,7 +63,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {}
       <div className={`lg:hidden fixed inset-x-0 top-16 bg-[#1E1E1E]/95 backdrop-blur-lg border-b border-[#333333]/50 transition-all duration-300 ${
         isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
       }`}>

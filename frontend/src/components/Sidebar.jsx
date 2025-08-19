@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -96,14 +96,13 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
 
   const handleSectionClick = (sectionId, isPage = false, path = null) => {
     if (isPage && path) {
-      // Navigate to page - this will be handled by Link component
+
       return;
     }
-    
+
     setActiveSection(sectionId);
     onSectionChange?.(sectionId);
-    
-    // Smooth scroll to section (only for home page sections)
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ 
@@ -112,7 +111,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       });
     }
   };
-  
+
   const isActiveItem = (item) => {
     if (item.isPage) {
       return location.pathname === item.path;
@@ -130,7 +129,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -143,7 +142,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Toggle Button */}
+      {}
       <button
         onClick={toggleSidebar}
         className="lg:hidden fixed top-20 left-4 z-[10000] p-3 bg-gradient-to-r from-[#4CAF50] to-[#45a049] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
@@ -151,7 +150,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {/* Sidebar */}
+      {}
       <motion.aside
         initial={{ x: -320 }}
         animate={{ 
@@ -166,7 +165,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
         className={`fixed top-0 left-0 h-screen bg-gradient-to-br from-[#1E1E1E]/95 to-[#121212]/95 backdrop-blur-xl border-r border-[#333333]/50 shadow-2xl z-[9999] overflow-hidden`}
         style={{ width: isCompact ? 80 : 320 }}
       >
-        {/* Header */}
+        {}
         <div className="p-4 pt-20 border-b border-[#333333]/30">
           <div className="flex items-center justify-between">
             {!isCompact && (
@@ -184,17 +183,16 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                 </div>
               </motion.div>
             )}
-            
-        
+
           </div>
         </div>
 
-        {/* Navigation Items */}
+        {}
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {sidebarItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = isActiveItem(item);
-            
+
             const itemContent = (
               <>
                 <div className="flex items-center p-4">
@@ -207,7 +205,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                       isActive ? 'text-white' : 'text-[#B3B3B3] group-hover:text-[#4CAF50]'
                     }`} />
                   </div>
-                  
+
                   {!isCompact && (
                     <div className="ml-4 flex-1 text-left">
                       <div className={`font-semibold transition-colors duration-200 ${
@@ -224,7 +222,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                   )}
                 </div>
 
-                {/* Hover Effect */}
+                {}
                 {hoveredItem === item.id && !isActive && (
                   <motion.div
                     layoutId="hoverBackground"
@@ -235,13 +233,13 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                   />
                 )}
 
-                {/* Active Indicator */}
+                {}
                 {isActive && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full shadow-lg" />
                 )}
               </>
             );
-            
+
             return (
               <motion.div
                 key={item.id}
@@ -273,7 +271,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
           })}
         </div>
 
-        {/* Stats Section */}
+        {}
         {!isCompact && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -298,7 +296,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
           </motion.div>
         )}
 
-        {/* Bottom Gradient */}
+        {}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#121212] to-transparent pointer-events-none" />
       </motion.aside>
     </>

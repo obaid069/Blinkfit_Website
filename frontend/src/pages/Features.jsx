@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Eye,
@@ -56,7 +56,7 @@ const Features = () => {
     detection: {
       title: 'Advanced Blink Detection',
       description: 'Our AI uses cutting-edge computer vision to monitor your blink patterns',
-      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       features: [
         { icon: Target, title: 'Precision Tracking', desc: '99.5% accuracy in blink detection' },
         { icon: Shield, title: 'Privacy First', desc: 'All processing happens locally on your device' },
@@ -67,7 +67,7 @@ const Features = () => {
     exercises: {
       title: 'Personalized Eye Exercises',
       description: 'Science-backed exercises tailored to your specific needs',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       features: [
         { icon: Brain, title: 'AI-Powered Recommendations', desc: 'Exercises adapted to your specific needs' },
         { icon: TrendingUp, title: 'Progressive Training', desc: 'Difficulty adjusts based on your progress' },
@@ -78,7 +78,7 @@ const Features = () => {
     analytics: {
       title: 'Comprehensive Analytics',
       description: 'Detailed insights to track and improve your eye health',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       features: [
         { icon: BarChart3, title: 'Detailed Reports', desc: 'Weekly and monthly eye health summaries' },
         { icon: TrendingUp, title: 'Trend Analysis', desc: 'Track improvements over time' },
@@ -89,7 +89,7 @@ const Features = () => {
     integration: {
       title: 'Seamless Integration',
       description: 'Works perfectly across all your devices and platforms',
-      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       features: [
         { icon: Monitor, title: 'Desktop Integration', desc: 'Native apps for Windows, Mac, and Linux' },
         { icon: Smartphone, title: 'Mobile Apps', desc: 'Full-featured iOS and Android apps' },
@@ -126,7 +126,7 @@ const Features = () => {
 
   return (
     <div className="pt-16 bg-[#121212] min-h-screen">
-      {/* Hero Section */}
+      {}
       <section className="bg-gradient-to-r from-[#1E1E1E] to-[#121212] py-16">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -150,8 +150,8 @@ const Features = () => {
             </motion.p>
           </div>
 
-          {/* Main Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          {}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16">
             {mainFeatures.map((feature, index) => {
               const IconComponent = feature.icon;
               return (
@@ -187,7 +187,7 @@ const Features = () => {
         </div>
       </section>
 
-      {/* Detailed Features Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -206,8 +206,8 @@ const Features = () => {
             </p>
           </motion.div>
 
-          {/* Feature Tabs */}
-          <div className="flex flex-wrap justify-center mb-12 gap-2">
+          {}
+          <div className="flex flex-wrap justify-center mb-12 gap-2 px-4 sm:px-0">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
               return (
@@ -227,7 +227,7 @@ const Features = () => {
             })}
           </div>
 
-          {/* Active Tab Content */}
+          {}
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
@@ -243,7 +243,7 @@ const Features = () => {
                 <p className="text-lg text-[#B3B3B3] mb-8">
                   {detailedFeatures[activeTab].description}
                 </p>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {detailedFeatures[activeTab].features.map((item, index) => {
                     const IconComponent = item.icon;
@@ -301,7 +301,7 @@ const Features = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -369,7 +369,7 @@ const Features = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -412,7 +412,7 @@ const Features = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {}
       <section className="py-16 bg-[#4CAF50]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div

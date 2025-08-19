@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const blogSchema = new mongoose.Schema({
   title: {
@@ -43,7 +43,7 @@ const blogSchema = new mongoose.Schema({
   },
   readTime: {
     type: Number,
-    default: 5, // in minutes
+    default: 5,
   },
   published: {
     type: Boolean,
@@ -73,17 +73,14 @@ const blogSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Index for search functionality
 blogSchema.index({ title: 'text', excerpt: 'text', content: 'text' });
 blogSchema.index({ category: 1, published: 1 });
 blogSchema.index({ publishedAt: -1 });
 
-// Virtual for URL
 blogSchema.virtual('url').get(function() {
   return `/blog/${this.slug}`;
 });
 
-// Pre-save middleware to generate slug
 blogSchema.pre('save', function(next) {
   if (this.isModified('title') && !this.slug) {
     this.slug = this.title
@@ -92,20 +89,15 @@ blogSchema.pre('save', function(next) {
       .replace(/\s+/g, '-')
       .trim();
   }
-  
-  // Auto-generate meta fields if not provided
   if (!this.metaTitle) {
     this.metaTitle = this.title.length > 60 ? this.title.substring(0, 57) + '...' : this.title;
   }
-  
   if (!this.metaDescription) {
     this.metaDescription = this.excerpt.length > 160 ? this.excerpt.substring(0, 157) + '...' : this.excerpt;
   }
-  
   next();
 });
 
-// Method to increment views
 blogSchema.methods.incrementViews = function() {
   this.views += 1;
   return this.save();

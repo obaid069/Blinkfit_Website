@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -47,7 +47,7 @@ const Blog = () => {
       }
 
       const response = await getBlogs(params);
-      console.log('API Response:', response); // Debug log
+      console.log('API Response:', response); 
       setBlogs(response.data?.blogs || response.blogs || response);
       setPagination(response.data?.pagination || response.pagination || {});
     } catch (error) {
@@ -60,7 +60,7 @@ const Blog = () => {
   const fetchCategories = async () => {
     try {
       const response = await getBlogCategories();
-      console.log('Categories Response:', response); // Debug log
+      console.log('Categories Response:', response); 
       setCategories(response.data?.data || response.data || response);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -99,7 +99,7 @@ const Blog = () => {
 
   return (
     <div className="pt-16 bg-[#121212] min-h-screen">
-      {/* Header */}
+      {}
       <section className="bg-gradient-to-r from-[#1E1E1E] to-[#121212] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -124,11 +124,11 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Search and Filters */}
+      {}
       <section className="py-8 bg-[#1E1E1E] border-b border-[#333333]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            {/* Search */}
+            {}
             <form onSubmit={handleSearch} className="flex-1 max-w-md">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -142,9 +142,9 @@ const Blog = () => {
               </div>
             </form>
 
-            {/* Filters */}
+            {}
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Category Filter */}
+              {}
               <div className="relative">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -184,7 +184,7 @@ const Blog = () => {
                 )}
               </div>
 
-              {/* Sort */}
+              {}
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value)}
@@ -201,7 +201,7 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Blog Posts */}
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
@@ -241,7 +241,7 @@ const Blog = () => {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="p-6">
                       <div className="flex items-center text-sm text-[#B3B3B3] mb-3">
                         <Calendar className="w-4 h-4 mr-1" />
@@ -251,21 +251,21 @@ const Blog = () => {
                         <Eye className="w-4 h-4 mr-1" />
                         <span>{blog.views}</span>
                       </div>
-                      
+
                       <h3 className="text-xl font-semibold text-white mb-3 line-clamp-2 group-hover:text-[#4CAF50] transition-colors duration-200">
                         {blog.title}
                       </h3>
-                      
+
                       <p className="text-[#B3B3B3] mb-4 line-clamp-3">
                         {blog.excerpt}
                       </p>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center text-sm text-[#B3B3B3]">
                           <User className="w-4 h-4 mr-1" />
                           <span>{blog.author}</span>
                         </div>
-                        
+
                         <Link 
                           to={`/blog/${blog.slug}`}
                           className="inline-flex items-center text-[#4CAF50] hover:text-[#45a049] font-medium group"
@@ -279,7 +279,7 @@ const Blog = () => {
                 ))}
               </div>
 
-              {/* Pagination */}
+              {}
               {pagination.totalPages > 1 && (
                 <div className="mt-12 flex justify-center">
                   <nav className="flex items-center space-x-2">
@@ -290,7 +290,7 @@ const Blog = () => {
                     >
                       Previous
                     </button>
-                    
+
                     {[...Array(pagination.totalPages)].map((_, index) => {
                       const pageNumber = index + 1;
                       return (
@@ -307,7 +307,7 @@ const Blog = () => {
                         </button>
                       );
                     })}
-                    
+
                     <button
                       onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
                       disabled={!pagination.hasNext}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -37,7 +37,7 @@ const BlogPost = () => {
     if (blog) {
       fetchRelatedBlogs();
       setLikes(blog.likes || 0);
-      // Check if user has liked this post (you can implement localStorage tracking)
+
       const hasLiked = localStorage.getItem(`liked_${blog._id}`);
       setLiked(!!hasLiked);
     }
@@ -57,7 +57,7 @@ const BlogPost = () => {
 
   const fetchRelatedBlogs = async () => {
     if (!blog) return;
-    
+
     try {
       const response = await getBlogs({
         category: blog.category,
@@ -77,8 +77,7 @@ const BlogPost = () => {
       const response = await likeBlog(blog._id);
       setLikes(response.data.likes);
       setLiked(!liked);
-      
-      // Store like status in localStorage
+
       if (!liked) {
         localStorage.setItem(`liked_${blog._id}`, 'true');
       } else {
@@ -92,16 +91,16 @@ const BlogPost = () => {
   const handleShare = async (platform) => {
     const url = window.location.href;
     const title = blog?.title || '';
-    
+
     switch (platform) {
       case 'facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        window.open(`https:
         break;
       case 'twitter':
-        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, '_blank');
+        window.open(`https:
         break;
       case 'linkedin':
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+        window.open(`https:
         break;
       case 'copy':
         try {
@@ -128,8 +127,7 @@ const BlogPost = () => {
 
   const formatContent = (content) => {
     if (!content) return '';
-    
-    // Simple formatting for line breaks and paragraphs
+
     return content
       .split('\n\n')
       .map((paragraph, index) => (
@@ -178,7 +176,7 @@ const BlogPost = () => {
 
   return (
     <div className="pt-16 min-h-screen bg-white">
-      {/* Navigation */}
+      {}
       <div className="bg-gray-50 py-4 border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
@@ -192,7 +190,7 @@ const BlogPost = () => {
       </div>
 
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Header */}
+        {}
         <motion.header
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -204,11 +202,11 @@ const BlogPost = () => {
               {blog.category}
             </span>
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             {blog.title}
           </h1>
-          
+
           <div className="flex flex-wrap items-center text-gray-600 mb-8 gap-6">
             <div className="flex items-center">
               <User className="w-5 h-5 mr-2" />
@@ -235,7 +233,7 @@ const BlogPost = () => {
           )}
         </motion.header>
 
-        {/* Featured Image */}
+        {}
         {blog.featuredImage && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -251,7 +249,7 @@ const BlogPost = () => {
           </motion.div>
         )}
 
-        {/* Content */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -263,7 +261,7 @@ const BlogPost = () => {
           </div>
         </motion.div>
 
-        {/* Tags */}
+        {}
         {blog.tags && blog.tags.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -285,7 +283,7 @@ const BlogPost = () => {
           </motion.div>
         )}
 
-        {/* Actions */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -355,14 +353,14 @@ const BlogPost = () => {
         </motion.div>
       </article>
 
-      {/* Related Posts */}
+      {}
       {relatedBlogs.length > 0 && (
         <section className="bg-gray-50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
               Related Articles
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedBlogs.map((relatedBlog, index) => (
                 <motion.article
@@ -384,7 +382,7 @@ const BlogPost = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <div className="flex items-center text-sm text-gray-500 mb-3">
                       <Calendar className="w-4 h-4 mr-1" />
@@ -392,15 +390,15 @@ const BlogPost = () => {
                       <Clock className="w-4 h-4 mr-1" />
                       <span>{relatedBlog.readTime} min read</span>
                     </div>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
                       {relatedBlog.title}
                     </h3>
-                    
+
                     <p className="text-gray-600 mb-4 line-clamp-3">
                       {relatedBlog.excerpt}
                     </p>
-                    
+
                     <Link 
                       to={`/blog/${relatedBlog.slug}`}
                       className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"

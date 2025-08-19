@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Eye,
@@ -71,32 +71,32 @@ const About = () => {
     {
       name: 'Dr. Sarah Chen',
       role: 'Co-Founder & Chief Medical Officer',
-      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       bio: 'Ophthalmologist with 15+ years of experience in digital eye health research.'
     },
     {
       name: 'Michael Rodriguez',
       role: 'Co-Founder & CEO',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       bio: 'Tech entrepreneur passionate about using AI to improve health outcomes.'
     },
     {
       name: 'Dr. Aisha Patel',
       role: 'Head of AI Research',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       bio: 'Computer vision expert with PhD in Machine Learning and AI applications in healthcare.'
     },
     {
       name: 'James Wilson',
       role: 'Head of Product',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      image: 'https:
       bio: 'Product strategist focused on creating intuitive and effective health applications.'
     }
   ];
 
   return (
     <div className="pt-16 bg-[#121212] min-h-screen">
-      {/* Hero Section */}
+      {}
       <section className="bg-gradient-to-r from-[#1E1E1E] to-[#121212] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -121,7 +121,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -149,7 +149,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Mission Section */}
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
@@ -192,7 +192,7 @@ const About = () => {
                 ))}
               </div>
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -200,7 +200,7 @@ const About = () => {
               className="mt-12 lg:mt-0"
             >
               <img
-                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+                src="https:
                 alt="Person using computer"
                 className="rounded-lg shadow-lg w-full"
               />
@@ -209,7 +209,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -253,7 +253,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Timeline Section */}
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -271,9 +271,9 @@ const About = () => {
           </motion.div>
 
           <div className="relative">
-            {/* Timeline line */}
+            {}
             <div className="absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-[#4CAF50] bg-opacity-30"></div>
-            
+
             <div className="space-y-12">
               {timeline.map((item, index) => (
                 <motion.div
@@ -285,10 +285,10 @@ const About = () => {
                     index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
                   }`}
                 >
-                  {/* Timeline dot */}
+                  {}
                   <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#4CAF50] rounded-full z-10"></div>
-                  
-                  {/* Content */}
+
+                  {}
                   <div className={`w-full lg:w-1/2 ${
                     index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'
                   }`}>
@@ -311,7 +311,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
+      {}
       <section className="py-16 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -359,7 +359,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {}
       <section className="py-16 bg-[#4CAF50]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
