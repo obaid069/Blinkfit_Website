@@ -56,7 +56,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: 'Address',
-      details: 'Air University, E-9, Islamabad, Pakistan',
+      details: 'Air University Islamabad, Service Road E-9 / E-8, Islamabad, 44000, Pakistan',
       description: 'Visit our campus office.'
     },
     {
@@ -427,7 +427,7 @@ const Contact = () => {
               Visit Our Office
             </h2>
             <p className="text-[#B3B3B3]">
-              Located at Air University, Islamabad, Pakistan
+              Located at Air University Islamabad, Service Road E-9 / E-8, Islamabad
             </p>
           </motion.div>
 
@@ -438,21 +438,21 @@ const Contact = () => {
             className="bg-[#1E1E1E] border border-[#333333] rounded-lg overflow-hidden"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.8572469999823!2d73.04427731521127!3d33.64942008073403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df9675aaaaaaab%3A0xc5180922c44eb86b!2sAir%20University%2C%20PAF%20Complex%20E-9%2C%20Islamabad%2C%20Islamabad%20Capital%20Territory%2C%20Pakistan!5e0!3m2!1sen!2s!4v1642678900000!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.8!2d73.0440717!3d33.6494201!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df9675aaaaaaab%3A0xc5180922c44eb86b!2sAir%20University%20Islamabad%2C%20Service%20Road%20E-9%2FE-8%2C%20Islamabad%2C%2044000%2C%20Pakistan!5e0!3m2!1sen!2s!4v1734678900000!5m2!1sen!2s"
               width="100%"
               height="400"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Air University Islamabad Location"
+              title="Air University Islamabad Location - Service Road E-9/E-8"
               className="w-full h-96"
             ></iframe>
             <div className="p-6">
               <div className="flex items-center justify-center">
                 <MapPin className="w-5 h-5 text-[#4CAF50] mr-2" />
                 <p className="text-[#B3B3B3]">
-                  Air University, E-9, Islamabad, Pakistan
+                  Air University Islamabad, Service Road E-9 / E-8, Islamabad, 44000, Pakistan
                 </p>
               </div>
             </div>
