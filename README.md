@@ -1,4 +1,4 @@
-﻿# ðŸ‘ï¸ BlinkFit - AI-Powered Eye Health Monitoring
+﻿BlinkFit - AI-Powered Eye Health Monitoring
 
 ![BlinkFit Logo](frontend/src/assets/logo.png)
 
