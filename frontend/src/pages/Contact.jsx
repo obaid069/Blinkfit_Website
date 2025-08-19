@@ -438,7 +438,7 @@ const Contact = () => {
             className="bg-[#1E1E1E] border border-[#333333] rounded-lg overflow-hidden"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3319.7326!2d73.1342!3d33.6844!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbfd07891722f%3A0x6059515c3bdb02b4!2sAir%20University%2C%20Islamabad!5e0!3m2!1sen!2s!4v1706123456789!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3319.4!2d73.0247!3d33.7138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbfd07891722f%3A0x6059515c3bdb02b4!2sAir%20University%2C%20Islamabad!5e0!3m2!1sen!2s!4v1706123456789!5m2!1sen!2s"
               width="100%"
               height="400"
               style={{ border: 0 }}
