@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import {
@@ -438,7 +438,7 @@ const Contact = () => {
             className="bg-[#1E1E1E] border border-[#333333] rounded-lg overflow-hidden"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.856!2d73.044277!3d33.649420!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df967662c566ed%3A0x9e8ecfd783f72f31!2sAir%20University%20Islamabad!5e0!3m2!1sen!2spk!4v1705678900000!5m2!1sen!2spk"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dOMD0C6f8Qqf3Q&q=Air+University+Islamabad+Pakistan&zoom=16&maptype=roadmap"
               width="100%"
               height="400"
               style={{ border: 0 }}
