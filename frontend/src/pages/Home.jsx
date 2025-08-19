@@ -94,17 +94,11 @@ const Home = () => {
         {}
         <section id="hero" className="relative bg-gradient-to-br from-[#1E1E1E] to-[#121212] overflow-hidden w-full min-h-screen flex items-center">
           {}
-          <Particles
-            particleColors={['#4CAF50', '#45a049', '#66BB6A']}
-            particleCount={100}
-            particleSpread={12}
-            speed={0.05}
-            particleBaseSize={120}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={false}
-            className=""
-          />
+          <div className="absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+            <FallbackParticles particleCount={80} className="" />
+          </div>
+          </div>
 
           <div className="relative px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full z-10">
             <div className="max-w-7xl mx-auto">
