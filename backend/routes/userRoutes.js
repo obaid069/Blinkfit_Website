@@ -140,7 +140,7 @@ router.post('/newsletter/subscribe',
                   ` : ''}
 
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="${process.env.FRONTEND_URL || 'https:
+                    <a href="${process.env.FRONTEND_URL || 'https://blinkfit-website.vercel.app'}"
                        style="background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
                       Visit BlinkFit
                     </a>
@@ -151,7 +151,7 @@ router.post('/newsletter/subscribe',
                   <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
                   <p style="font-size: 12px; color: #6b7280; text-align: center;">
                     You can unsubscribe at any time by clicking 
-                    <a href="${process.env.FRONTEND_URL || 'https:
+                    <a href="${process.env.FRONTEND_URL || 'https://blinkfit-website.vercel.app'}/unsubscribe"
                        style="color: #2563eb;">here</a>.
                   </p>
                 </div>

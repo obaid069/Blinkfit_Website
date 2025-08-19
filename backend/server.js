@@ -27,8 +27,9 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const allowedOrigins = [
-  'http:
-  'http:
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://blinkfit-website.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -48,12 +49,56 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected successfully'))
-.catch((err) => console.error('MongoDB connection error:', err));
+// Handle favicon.ico requests
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
+
+// MongoDB connection with serverless optimization
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) {
+    return;
+  }
+  
+  try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI is not defined in environment variables');
+    }
+    
+    await mongoose.connect(process.env.MONGODB_URI, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      bufferCommands: false,
+    });
+    
+    isConnected = true;
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
+  }
+};
+
+// Initialize DB connection
+connectDB().catch(console.error);
+
+// Middleware to ensure DB connection before each API request
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Database connection failed',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+});
 
 app.use('/api/blogs', blogRoutes);
 app.use('/api/contact', contactRoutes);
@@ -98,9 +143,9 @@ app.use('*', (req, res) => {
 
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    console.log(`ðŸš€ BlinkFit Server is running on port ${PORT}`);
-    console.log(`ðŸŒŸ Environment: ${process.env.NODE_ENV}`);
-    console.log(`ðŸ”— API Base URL: http:
+    console.log(`🚀 BlinkFit Server is running on port ${PORT}`);
+    console.log(`🌟 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 API Base URL: http://localhost:${PORT}`);
   });
 }
 

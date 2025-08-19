@@ -71,25 +71,25 @@ const About = () => {
     {
       name: 'Dr. Sarah Chen',
       role: 'Co-Founder & Chief Medical Officer',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       bio: 'Ophthalmologist with 15+ years of experience in digital eye health research.'
     },
     {
       name: 'Michael Rodriguez',
       role: 'Co-Founder & CEO',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       bio: 'Tech entrepreneur passionate about using AI to improve health outcomes.'
     },
     {
       name: 'Dr. Aisha Patel',
       role: 'Head of AI Research',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       bio: 'Computer vision expert with PhD in Machine Learning and AI applications in healthcare.'
     },
     {
       name: 'James Wilson',
       role: 'Head of Product',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       bio: 'Product strategist focused on creating intuitive and effective health applications.'
     }
   ];
@@ -200,7 +200,7 @@ const About = () => {
               className="mt-12 lg:mt-0"
             >
               <img
-                src="https:
+                src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
                 alt="Person using computer"
                 className="rounded-lg shadow-lg w-full"
               />
