@@ -438,14 +438,14 @@ const Contact = () => {
             className="bg-[#1E1E1E] border border-[#333333] rounded-lg overflow-hidden"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.8!2d73.0440717!3d33.6494201!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df9675aaaaaaab%3A0xc5180922c44eb86b!2sAir%20University%20Islamabad%2C%20Service%20Road%20E-9%2FE-8%2C%20Islamabad%2C%2044000%2C%20Pakistan!5e0!3m2!1sen!2s!4v1734678900000!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.856!2d73.044277!3d33.649420!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df967662c566ed%3A0x9e8ecfd783f72f31!2sAir%20University%20Islamabad!5e0!3m2!1sen!2spk!4v1705678900000!5m2!1sen!2spk"
               width="100%"
               height="400"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Air University Islamabad Location - Service Road E-9/E-8"
+              title="Air University Islamabad Location"
               className="w-full h-96"
             ></iframe>
             <div className="p-6">
