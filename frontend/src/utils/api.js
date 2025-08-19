@@ -1,7 +1,7 @@
 ﻿import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http:
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ const mockBlogs = [
     content: 'Digital eye strain has become increasingly common...',
     author: 'Dr. Sarah Martinez',
     category: 'Research',
-    featuredImage: 'https:
+    featuredImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1950&q=80',
     publishedAt: '2024-01-15T10:00:00Z',
     readTime: 8,
     views: 1245,
@@ -53,7 +53,7 @@ const mockBlogs = [
     content: 'Eye exercises are crucial for maintaining...',
     author: 'Dr. Michael Chen',
     category: 'Tips & Tricks',
-    featuredImage: 'https:
+    featuredImage: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
     publishedAt: '2024-01-10T14:30:00Z',
     readTime: 6,
     views: 892,
@@ -67,7 +67,7 @@ const mockBlogs = [
     content: 'Blue light exposure has been linked to...',
     author: 'Dr. Emily Rodriguez',
     category: 'Health',
-    featuredImage: 'https:
+    featuredImage: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1952&q=80',
     publishedAt: '2024-01-05T09:15:00Z',
     readTime: 7,
     views: 1567,
@@ -81,7 +81,7 @@ const mockBlogs = [
     content: 'Proper ergonomics play a crucial role...',
     author: 'Dr. James Wilson',
     category: 'Workplace Health',
-    featuredImage: 'https:
+    featuredImage: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
     publishedAt: '2023-12-28T16:20:00Z',
     readTime: 9,
     views: 743,
@@ -95,7 +95,7 @@ const mockBlogs = [
     content: 'Dry eye syndrome is increasingly common...',
     author: 'Dr. Lisa Zhang',
     category: 'Health',
-    featuredImage: 'https:
+    featuredImage: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80',
     publishedAt: '2023-12-20T11:45:00Z',
     readTime: 5,
     views: 634,
@@ -109,7 +109,7 @@ const mockBlogs = [
     content: 'Proper nutrition is essential for maintaining...',
     author: 'Dr. Amanda Foster',
     category: 'Nutrition',
-    featuredImage: 'https:
+    featuredImage: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
     publishedAt: '2023-12-15T13:30:00Z',
     readTime: 6,
     views: 456,

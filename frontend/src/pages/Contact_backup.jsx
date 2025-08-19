@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import {
@@ -112,6 +112,7 @@ const Contact = () => {
 
   return (
     <div className="pt-16 bg-[#121212] min-h-screen">
+      {}
       <section className="bg-gradient-to-r from-[#1E1E1E] to-[#121212] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -136,9 +137,11 @@ const Contact = () => {
         </div>
       </section>
 
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-3 lg:gap-16">
+            {}
             <div className="lg:col-span-2">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -149,6 +152,7 @@ const Contact = () => {
                 <h2 className="text-2xl font-bold text-white mb-8">Send us a message</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  {}
                   <div>
                     <label className="block text-sm font-medium text-white mb-3">
                       What can we help you with?
@@ -184,6 +188,7 @@ const Contact = () => {
                     )}
                   </div>
 
+                  {}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
@@ -233,6 +238,7 @@ const Contact = () => {
                     </div>
                   </div>
 
+                  {}
                   <div>
                     <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
                       Subject
@@ -252,6 +258,7 @@ const Contact = () => {
                     )}
                   </div>
 
+                  {}
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
                       Message
@@ -271,6 +278,7 @@ const Contact = () => {
                     )}
                   </div>
 
+                  {}
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -284,6 +292,7 @@ const Contact = () => {
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </button>
 
+                  {}
                   {submitStatus === 'success' && (
                     <div className="flex items-center p-4 bg-green-50 border border-green-200 rounded-lg">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
@@ -305,6 +314,7 @@ const Contact = () => {
               </motion.div>
             </div>
 
+            {}
             <div className="mt-12 lg:mt-0">
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -347,6 +357,7 @@ const Contact = () => {
                   </div>
                 </div>
 
+                {}
                 <div className="bg-[#1E1E1E] border border-[#333333] rounded-lg p-6">
                   <h4 className="font-semibold text-white mb-4">Need quick help?</h4>
                   <div className="space-y-3">
@@ -354,13 +365,13 @@ const Contact = () => {
                       href="#faq"
                       className="block text-[#4CAF50] hover:text-[#45a049] font-medium"
                     >
-                      Check our FAQ →
+                      Check our FAQ â†’
                     </a>
                     <a
                       href="/blog"
                       className="block text-[#4CAF50] hover:text-[#45a049] font-medium"
                     >
-                      Browse help articles →
+                      Browse help articles â†’
                     </a>
                     <a
                       href="https://docs.blinkfit.com"
@@ -378,6 +389,7 @@ const Contact = () => {
         </div>
       </section>
 
+      {}
       <section id="faq" className="py-16 bg-[#1E1E1E]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -415,6 +427,7 @@ const Contact = () => {
         </div>
       </section>
 
+      {}
       <section className="py-16 bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
