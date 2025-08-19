@@ -374,12 +374,12 @@ const Contact = () => {
                       Browse help articles â†’
                     </a>
                     <a
-                      href="https:
+                      href="https://docs.blinkfit.com"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block text-[#4CAF50] hover:text-[#45a049] font-medium"
                     >
-                      View documentation â†’
+                      View documentation →
                     </a>
                   </div>
                 </div>

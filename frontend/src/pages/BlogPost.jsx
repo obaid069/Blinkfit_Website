@@ -94,13 +94,13 @@ const BlogPost = () => {
 
     switch (platform) {
       case 'facebook':
-        window.open(`https:
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
         break;
       case 'twitter':
-        window.open(`https:
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`);
         break;
       case 'linkedin':
-        window.open(`https:
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`);
         break;
       case 'copy':
         try {

@@ -35,7 +35,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Sarah Johnson",
       publishedAt: "2024-01-15",
       readTime: "5 min read",
-      image: "https:
+      image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       tags: ["Digital Strain", "Prevention", "Computer Vision"],
       featured: true
     },
@@ -48,7 +48,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Michael Chen",
       publishedAt: "2024-01-12",
       readTime: "3 min read",
-      image: "https:
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       tags: ["20-20-20 Rule", "Eye Exercises", "Workplace Health"],
       featured: true
     },
@@ -61,7 +61,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Emily Rodriguez",
       publishedAt: "2024-01-10",
       readTime: "7 min read",
-      image: "https:
+      image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       tags: ["Blue Light", "Research", "Sleep Health"],
       featured: false
     },
@@ -74,7 +74,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Robert Kim",
       publishedAt: "2024-01-08",
       readTime: "6 min read",
-      image: "https:
+      image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       tags: ["Nutrition", "Vitamins", "Eye Health"],
       featured: false
     },
@@ -87,7 +87,7 @@ const EyeHealthInsights = () => {
       author: "Dr. Lisa Wang",
       publishedAt: "2024-01-05",
       readTime: "4 min read",
-      image: "https:
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       tags: ["Eye Exercises", "Daily Routine", "Vision Care"],
       featured: true
     },
@@ -100,7 +100,7 @@ const EyeHealthInsights = () => {
       author: "Dr. James Wilson",
       publishedAt: "2024-01-03",
       readTime: "5 min read",
-      image: "https:
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       tags: ["Ergonomics", "Workspace", "Computer Setup"],
       featured: false
     }

@@ -56,7 +56,7 @@ const Features = () => {
     detection: {
       title: 'Advanced Blink Detection',
       description: 'Our AI uses cutting-edge computer vision to monitor your blink patterns',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1582719371630-6dcab80043e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
       features: [
         { icon: Target, title: 'Precision Tracking', desc: '99.5% accuracy in blink detection' },
         { icon: Shield, title: 'Privacy First', desc: 'All processing happens locally on your device' },
@@ -67,7 +67,7 @@ const Features = () => {
     exercises: {
       title: 'Personalized Eye Exercises',
       description: 'Science-backed exercises tailored to your specific needs',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
       features: [
         { icon: Brain, title: 'AI-Powered Recommendations', desc: 'Exercises adapted to your specific needs' },
         { icon: TrendingUp, title: 'Progressive Training', desc: 'Difficulty adjusts based on your progress' },
@@ -78,7 +78,7 @@ const Features = () => {
     analytics: {
       title: 'Comprehensive Analytics',
       description: 'Detailed insights to track and improve your eye health',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
       features: [
         { icon: BarChart3, title: 'Detailed Reports', desc: 'Weekly and monthly eye health summaries' },
         { icon: TrendingUp, title: 'Trend Analysis', desc: 'Track improvements over time' },
@@ -89,7 +89,7 @@ const Features = () => {
     integration: {
       title: 'Seamless Integration',
       description: 'Works perfectly across all your devices and platforms',
-      image: 'https:
+      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
       features: [
         { icon: Monitor, title: 'Desktop Integration', desc: 'Native apps for Windows, Mac, and Linux' },
         { icon: Smartphone, title: 'Mobile Apps', desc: 'Full-featured iOS and Android apps' },
