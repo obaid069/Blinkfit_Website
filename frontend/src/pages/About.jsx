@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import { motion } from 'framer-motion';
+// Build trigger - fixing URLs
 import {
   Eye,
   Heart,
