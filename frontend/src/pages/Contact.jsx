@@ -56,8 +56,8 @@ const Contact = () => {
     {
       icon: MapPin,
       title: 'Address',
-      details: '123 Health Tech Ave, San Francisco, CA 94102',
-      description: 'Come say hello at our HQ.'
+      details: 'Air University, E-9, Islamabad, Pakistan',
+      description: 'Visit our campus office.'
     },
     {
       icon: Clock,
@@ -427,7 +427,7 @@ const Contact = () => {
               Visit Our Office
             </h2>
             <p className="text-[#B3B3B3]">
-              Located in the heart of San Francisco's tech district
+              Located at Air University, Islamabad, Pakistan
             </p>
           </motion.div>
 
@@ -435,14 +435,26 @@ const Contact = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-[#1E1E1E] border border-[#333333] rounded-lg h-96 flex items-center justify-center"
+            className="bg-[#1E1E1E] border border-[#333333] rounded-lg overflow-hidden"
           >
-            <div className="text-center">
-              <MapPin className="w-16 h-16 text-[#333333] mx-auto mb-4" />
-              <p className="text-[#B3B3B3]">Interactive map coming soon</p>
-              <p className="text-sm text-[#B3B3B3] mt-2">
-                123 Health Tech Ave, San Francisco, CA 94102
-              </p>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.8572469999823!2d73.04427731521127!3d33.64942008073403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df9675aaaaaaab%3A0xc5180922c44eb86b!2sAir%20University%2C%20PAF%20Complex%20E-9%2C%20Islamabad%2C%20Islamabad%20Capital%20Territory%2C%20Pakistan!5e0!3m2!1sen!2s!4v1642678900000!5m2!1sen!2s"
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Air University Islamabad Location"
+              className="w-full h-96"
+            ></iframe>
+            <div className="p-6">
+              <div className="flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-[#4CAF50] mr-2" />
+                <p className="text-[#B3B3B3]">
+                  Air University, E-9, Islamabad, Pakistan
+                </p>
+              </div>
             </div>
           </motion.div>
         </div>
