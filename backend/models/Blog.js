@@ -27,6 +27,14 @@ const blogSchema = new mongoose.Schema({
     required: [true, 'Author name is required'],
     default: 'BlinkFit Team',
   },
+  authorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: function() {
+      // Only required for admin/doctor created blogs
+      return this.author !== 'BlinkFit Team';
+    },
+  },
   category: {
     type: String,
     required: [true, 'Blog category is required'],

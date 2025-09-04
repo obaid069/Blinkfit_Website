@@ -1,8 +1,46 @@
-﻿import express from 'express';
+import express from 'express';
 import { body, query, param, validationResult } from 'express-validator';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import Blog from '../models/Blog.js';
+import { authenticate, adminOnly, doctorOnly, adminOrDoctor, checkBlogOwnership } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'uploads/images';
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'blog-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  // Check if file is an image
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: fileFilter
+});
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -135,6 +173,570 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+// ============= ADMIN & DOCTOR BLOG MANAGEMENT ROUTES =============
+
+// Admin Analytics
+router.get('/admin/analytics', authenticate, adminOnly, async (req, res) => {
+  try {
+    const totalBlogs = await Blog.countDocuments();
+    const publishedBlogs = await Blog.countDocuments({ published: true });
+    const draftBlogs = await Blog.countDocuments({ published: false });
+    
+    const topBlogs = await Blog.find({ published: true })
+      .sort({ views: -1 })
+      .limit(5)
+      .select('title views likes publishedAt author category')
+      .lean();
+
+    const categoryStats = await Blog.aggregate([
+      { $match: { published: true } },
+      { $group: { _id: '$category', count: { $sum: 1 }, totalViews: { $sum: '$views' } } },
+      { $sort: { count: -1 } }
+    ]);
+
+    const authorStats = await Blog.aggregate([
+      { $match: { published: true, authorId: { $exists: true } } },
+      { $group: { _id: '$authorId', count: { $sum: 1 }, totalViews: { $sum: '$views' } } },
+      { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'author' } },
+      { $unwind: '$author' },
+      { $project: { name: '$author.name', role: '$author.role', blogCount: '$count', totalViews: '$totalViews' } },
+      { $sort: { blogCount: -1 } }
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          total: totalBlogs,
+          published: publishedBlogs,
+          drafts: draftBlogs,
+        },
+        topBlogs,
+        categoryStats: categoryStats.map(stat => ({
+          category: stat._id,
+          count: stat.count,
+          totalViews: stat.totalViews,
+        })),
+        authorStats,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Admin: Create new blog (with file upload support)
+router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredImage'), [
+  body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+  body('excerpt').trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
+  body('content').trim().isLength({ min: 50 }).withMessage('Content must be at least 50 characters'),
+  body('category').isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
+  body('tags').optional().custom((value) => {
+    if (Array.isArray(value)) return true;
+    if (typeof value === 'string') return true;
+    return false;
+  }).withMessage('Tags must be an array or string'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('metaTitle').optional().trim().isLength({ max: 60 }).withMessage('Meta title cannot exceed 60 characters'),
+  body('metaDescription').optional().trim().isLength({ max: 160 }).withMessage('Meta description cannot exceed 160 characters'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
+    let { tags } = req.body;
+    const user = req.user;
+
+    // Handle tags - convert string to array if needed
+    if (typeof tags === 'string') {
+      tags = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+    } else if (!Array.isArray(tags)) {
+      tags = [];
+    }
+
+    // Handle featured image
+    let featuredImage = null;
+    if (req.file) {
+      // File uploaded - use the relative file path
+      featuredImage = `/uploads/images/${req.file.filename}`;
+    } else if (req.body.featuredImage) {
+      // URL provided
+      featuredImage = req.body.featuredImage;
+    }
+
+    // Create new blog with author information
+    const blog = new Blog({
+      title,
+      excerpt,
+      content,
+      author: user.name,
+      authorId: user._id,
+      category,
+      tags,
+      featuredImage: featuredImage || '/api/placeholder/600/400',
+      readTime: readTime || Math.ceil(content.split(' ').length / 200),
+      published: published !== undefined ? published : true,
+      metaTitle: metaTitle || title,
+      metaDescription: metaDescription || excerpt,
+    });
+
+    await blog.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Blog created successfully by admin',
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Error creating blog by admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating blog',
+      error: error.message,
+    });
+  }
+});
+
+// Create new blog (Admin or Doctor)
+router.post('/manage', authenticate, adminOrDoctor, [
+  body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+  body('excerpt').trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
+  body('content').trim().isLength({ min: 50 }).withMessage('Content must be at least 50 characters'),
+  body('category').isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
+  body('tags').optional().isArray().withMessage('Tags must be an array'),
+  body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { title, excerpt, content, category, tags, featuredImage, readTime, published } = req.body;
+    const user = req.user;
+
+    // Create new blog with author information
+    const blog = new Blog({
+      title,
+      excerpt,
+      content,
+      author: user.name,
+      authorId: user._id,
+      category,
+      tags: tags || [],
+      featuredImage: featuredImage || '/api/placeholder/600/400',
+      readTime: readTime || Math.ceil(content.split(' ').length / 200), // Estimate based on word count
+      published: published !== undefined ? published : true,
+    });
+
+    await blog.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Blog created successfully',
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Error creating blog:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating blog',
+      error: error.message,
+    });
+  }
+});
+
+// Admin: Get all blogs for management
+router.get('/admin/manage', authenticate, adminOnly, [
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  query('category').optional().isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']),
+  query('search').optional().isString().trim(),
+  query('published').optional().isBoolean(),
+  query('author').optional().isString().trim(),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      category,
+      search,
+      published,
+      author
+    } = req.query;
+
+    const query = {};
+
+    // Apply filters
+    if (category) {
+      query.category = category;
+    }
+
+    if (published !== undefined) {
+      query.published = published;
+    }
+
+    if (author) {
+      query.author = { $regex: author, $options: 'i' };
+    }
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { excerpt: { $regex: search, $options: 'i' } },
+        { author: { $regex: search, $options: 'i' } },
+        { category: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+    const blogs = await Blog.find(query)
+      .populate('authorId', 'name email role profile.specialization')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const totalBlogs = await Blog.countDocuments(query);
+    const totalPages = Math.ceil(totalBlogs / limit);
+
+    res.json({
+      success: true,
+      data: {
+        blogs,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalBlogs,
+          hasNext: page < totalPages,
+          hasPrev: page > 1,
+        },
+      },
+    });
+    
+  } catch (error) {
+    console.error('Error fetching blogs for admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blogs',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Admin: Get single blog for editing (any blog)
+router.get('/admin/manage/:id', authenticate, adminOnly, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findById(id)
+      .populate('authorId', 'name email role profile.specialization');
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Error fetching blog for admin editing:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blog',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Admin: Update any blog
+router.put('/admin/manage/:id', authenticate, adminOnly, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+  body('title').optional().trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+  body('excerpt').optional().trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
+  body('content').optional().trim().isLength({ min: 50 }).withMessage('Content must be at least 50 characters'),
+  body('category').optional().isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
+  body('tags').optional().isArray().withMessage('Tags must be an array'),
+  body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('featured').optional().isBoolean().withMessage('Featured must be a boolean'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Admin can update views and likes, but not authorId
+    delete updates.authorId;
+    delete updates.author;
+
+    // Update read time if content is changed
+    if (updates.content) {
+      updates.readTime = updates.readTime || Math.ceil(updates.content.split(' ').length / 200);
+    }
+
+    const blog = await Blog.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    }).populate('authorId', 'name email role profile.specialization');
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Blog updated successfully by admin',
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Error updating blog by admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating blog',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Admin: Delete any blog
+router.delete('/admin/manage/:id', authenticate, adminOnly, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+
+    await Blog.findByIdAndDelete(id);
+
+    res.json({
+      success: true,
+      message: 'Blog deleted successfully by admin',
+      data: {
+        deletedBlog: {
+          id: blog._id,
+          title: blog.title,
+          author: blog.author,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error deleting blog by admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting blog',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Doctor: Get all blogs for management (Doctor sees only their own)
+router.get('/manage', authenticate, doctorOnly, [
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  query('category').optional().isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']),
+  query('search').optional().isString().trim(),
+  query('published').optional().isBoolean(),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      category,
+      search,
+      published
+    } = req.query;
+
+    const query = {};
+
+    // Doctor only sees their own blogs
+    query.authorId = req.user._id;
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (published !== undefined) {
+      query.published = published;
+    }
+
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    const skip = (page - 1) * limit;
+    const blogs = await Blog.find(query)
+      .populate('authorId', 'name email role profile.specialization')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const totalBlogs = await Blog.countDocuments(query);
+    const totalPages = Math.ceil(totalBlogs / limit);
+
+    res.json({
+      success: true,
+      data: {
+        blogs,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalBlogs,
+          hasNext: page < totalPages,
+          hasPrev: page > 1,
+        },
+      },
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching blogs for management:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blogs',
+      error: error.message,
+    });
+  }
+});
+
+// Get single blog for editing
+router.get('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findById(id)
+      .populate('authorId', 'name email role profile.specialization');
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Error fetching blog for editing:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blog',
+      error: error.message,
+    });
+  }
+});
+
+// Update blog
+router.put('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+  body('title').optional().trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+  body('excerpt').optional().trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
+  body('content').optional().trim().isLength({ min: 50 }).withMessage('Content must be at least 50 characters'),
+  body('category').optional().isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
+  body('tags').optional().isArray().withMessage('Tags must be an array'),
+  body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Remove fields that shouldn't be updated directly
+    delete updates.authorId;
+    delete updates.author;
+    delete updates.views;
+    delete updates.likes;
+
+    // Update read time if content is changed
+    if (updates.content) {
+      updates.readTime = updates.readTime || Math.ceil(updates.content.split(' ').length / 200);
+    }
+
+    const blog = await Blog.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    }).populate('authorId', 'name email role profile.specialization');
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Blog updated successfully',
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating blog',
+      error: error.message,
+    });
+  }
+});
+
+// Delete blog
+router.delete('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findByIdAndDelete(id);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Blog deleted successfully',
+      data: {
+        deletedBlog: {
+          id: blog._id,
+          title: blog.title,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error deleting blog:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting blog',
+      error: error.message,
+    });
+  }
+});
+
 router.get('/:slug', [
   param('slug').isString().trim().notEmpty(),
 ], handleValidationErrors, async (req, res) => {
@@ -211,5 +813,6 @@ router.post('/:id/like', [
     });
   }
 });
+
 
 export default router;
