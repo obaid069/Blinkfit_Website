@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { 
   isAuthenticated, 
   getCurrentUser,
   adminCreateBlog,
   adminUpdateBlog,
-  getAdminBlogs
+  getAdminBlogs,
+  createBlog,
+  updateBlog,
+  getBlogForEdit
 } from '../utils/api';
 import { 
   FileText,
@@ -24,41 +27,101 @@ import {
 const BlogManagement = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const editBlog = location.state?.blog; // Blog to edit (if any)
+  const params = useParams();
+  const blogId = params.id; // Blog ID from URL params
+  
+  // State for blog being edited
+  const [editBlog, setEditBlog] = useState(location.state?.blog || null);
+  const [blogLoading, setBlogLoading] = useState(false);
+  
+  // Get current user for role-based functionality
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isDoctor, setIsDoctor] = useState(false);
   
   // Authentication check
   useEffect(() => {
     if (!isAuthenticated()) {
-      navigate('/admin/login');
+      navigate('/doctor/login');
       return;
     }
 
-    const currentUser = getCurrentUser();
-    if (!currentUser || currentUser.role !== 'admin') {
-      navigate('/admin/login');
+    const user = getCurrentUser();
+    if (!user || (user.role !== 'admin' && user.role !== 'doctor')) {
+      navigate('/doctor/login');
       return;
     }
+    
+    setCurrentUser(user);
+    setIsAdmin(user.role === 'admin');
+    setIsDoctor(user.role === 'doctor');
   }, [navigate]);
+
+  // Load blog data for editing
+  useEffect(() => {
+    if (blogId && !editBlog && currentUser) {
+      loadBlogForEdit();
+    }
+  }, [blogId, currentUser]); // Removed editBlog from dependencies to prevent infinite loop
+
+  const loadBlogForEdit = async () => {
+    setBlogLoading(true);
+    try {
+      console.log('🔄 Loading blog for edit:', blogId);
+      const response = await getBlogForEdit(blogId);
+      console.log('✅ Blog loaded for edit:', response);
+      
+      if (response && response.data) {
+        const blog = response.data;
+        setEditBlog(blog);
+        
+        // Update form data
+        setFormData({
+          title: blog.title || '',
+          excerpt: blog.excerpt || '',
+          content: blog.content || '',
+          category: blog.category || 'Eye Health',
+          tags: Array.isArray(blog.tags) ? blog.tags.join(', ') : '',
+          featuredImage: blog.featuredImage || '',
+          readTime: blog.readTime || 5,
+          published: blog.published ?? true,
+          metaTitle: blog.metaTitle || '',
+          metaDescription: blog.metaDescription || ''
+        });
+        
+        // Set image preview
+        if (blog.featuredImage && blog.featuredImage !== '/api/placeholder/600/400') {
+          setImagePreview(blog.featuredImage);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error loading blog for edit:', error);
+      alert('Failed to load blog data. Please try again.');
+      navigate('/doctor/dashboard');
+    } finally {
+      setBlogLoading(false);
+    }
+  };
 
   // Form state
   const [formData, setFormData] = useState({
-    title: editBlog?.title || '',
-    excerpt: editBlog?.excerpt || '',
-    content: editBlog?.content || '',
-    category: editBlog?.category || 'Eye Health',
-    tags: editBlog?.tags?.join(', ') || '',
-    featuredImage: editBlog?.featuredImage || '',
-    readTime: editBlog?.readTime || 5,
-    published: editBlog?.published !== undefined ? editBlog.published : true,
-    metaTitle: editBlog?.metaTitle || '',
-    metaDescription: editBlog?.metaDescription || ''
+    title: editBlog?.title ?? '',
+    excerpt: editBlog?.excerpt ?? '',
+    content: editBlog?.content ?? '',
+    category: editBlog?.category ?? 'Eye Health',
+    tags: editBlog?.tags?.join(', ') ?? '',
+    featuredImage: editBlog?.featuredImage ?? '',
+    readTime: editBlog?.readTime ?? 5,
+    published: editBlog?.published ?? true,
+    metaTitle: editBlog?.metaTitle ?? '',
+    metaDescription: editBlog?.metaDescription ?? ''
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [previewMode, setPreviewMode] = useState(false);
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(editBlog?.featuredImage || null);
+  const [imagePreview, setImagePreview] = useState(editBlog?.featuredImage ?? null);
   const fileInputRef = React.useRef(null);
 
   const categories = [
@@ -183,20 +246,18 @@ const BlogManagement = () => {
       if (imageFile) {
         // Create FormData for file upload
         blogData = new FormData();
-        blogData.append('title', formData.title);
-        blogData.append('excerpt', formData.excerpt);
-        blogData.append('content', formData.content);
-        blogData.append('category', formData.category);
-        blogData.append('published', formData.published);
-        blogData.append('readTime', formData.readTime);
-        blogData.append('metaTitle', formData.metaTitle);
-        blogData.append('metaDescription', formData.metaDescription);
+        blogData.append('title', formData.title || '');
+        blogData.append('excerpt', formData.excerpt || '');
+        blogData.append('content', formData.content || '');
+        blogData.append('category', formData.category || 'Eye Health');
+        blogData.append('published', String(formData.published));
+        blogData.append('readTime', String(formData.readTime || 5));
+        blogData.append('metaTitle', formData.metaTitle || '');
+        blogData.append('metaDescription', formData.metaDescription || '');
         
         // Handle tags
-        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
-        tags.forEach(tag => {
-          blogData.append('tags', tag);
-        });
+        const tags = (formData.tags || '').split(',').map(tag => tag.trim()).filter(tag => tag);
+        blogData.append('tags', tags.join(','));
         
         // Append the image file
         blogData.append('featuredImage', imageFile);
@@ -204,22 +265,31 @@ const BlogManagement = () => {
         // Regular JSON data
         blogData = {
           ...formData,
-          tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
+          tags: (formData.tags || '').split(',').map(tag => tag.trim()).filter(tag => tag)
         };
       }
 
       if (editBlog) {
         // Update existing blog
-        await adminUpdateBlog(editBlog._id, blogData);
+        if (isAdmin) {
+          await adminUpdateBlog(editBlog._id, blogData);
+        } else {
+          await updateBlog(editBlog._id, blogData);
+        }
         alert('Blog updated successfully!');
       } else {
         // Create new blog
-        await adminCreateBlog(blogData);
+        if (isAdmin) {
+          await adminCreateBlog(blogData);
+        } else {
+          await createBlog(blogData);
+        }
         alert('Blog created successfully!');
       }
 
-      // Navigate back to admin dashboard
-      navigate('/admin/dashboard', { state: { activeTab: 'blogs' } });
+      // Navigate back to appropriate dashboard
+      const dashboardPath = isAdmin ? '/admin/dashboard' : '/doctor/dashboard';
+      navigate(dashboardPath, { state: { activeTab: 'blogs' } });
     } catch (error) {
       console.error('Error saving blog:', error);
       alert(error.response?.data?.message || 'Error saving blog. Please try again.');
@@ -230,7 +300,8 @@ const BlogManagement = () => {
 
   const handleBack = () => {
     if (window.confirm('Are you sure you want to go back? Any unsaved changes will be lost.')) {
-      navigate('/admin/dashboard', { state: { activeTab: 'blogs' } });
+      const dashboardPath = isAdmin ? '/admin/dashboard' : '/doctor/dashboard';
+      navigate(dashboardPath, { state: { activeTab: 'blogs' } });
     }
   };
 
@@ -281,7 +352,15 @@ const BlogManagement = () => {
       </header>
 
       <div className="max-w-6xl mx-auto p-6">
-        {previewMode ? (
+        {blogLoading ? (
+          // Loading state
+          <div className="flex justify-center items-center py-12">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+              <p className="text-gray-400">Loading blog data...</p>
+            </div>
+          </div>
+        ) : previewMode ? (
           // Preview Mode
           <div className="bg-[#1E1E1E] rounded-lg p-8">
             <div className="max-w-4xl mx-auto">
