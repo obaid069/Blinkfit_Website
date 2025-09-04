@@ -84,11 +84,11 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
     }
   ];
 
-  const stats = [
-    { label: 'Users Protected', value: '50K+', icon: Eye },
-    { label: 'Hours Monitored', value: '2M+', icon: Clock },
-    { label: 'Health Score', value: '98%', icon: TrendingUp }
-  ];
+  //const stats = [
+    //{ label: 'Users Protected', value: '50K+', icon: Eye },
+    //{ label: 'Hours Monitored', value: '2M+', icon: Clock },
+    //{ label: 'Health Score', value: '98%', icon: TrendingUp }
+  //];
 
   useEffect(() => {
     setActiveSection(currentSection);
@@ -271,7 +271,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
           })}
         </div>
 
-        {}
+{/*         {}
         {!isCompact && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -298,7 +298,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
 
         {}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#121212] to-transparent pointer-events-none" />
-      </motion.aside>
+      </motion.aside> */}
     </>
   );
 };
