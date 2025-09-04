@@ -26,39 +26,39 @@
   }
 
   .text-responsive-xs {
-    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
   }
 
   .text-responsive-sm {
-    font-size: clamp(0.875rem, 2.5vw, 1rem);
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
   }
 
   .text-responsive-base {
-    font-size: clamp(1rem, 3vw, 1.125rem);
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
   }
 
   .text-responsive-lg {
-    font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+    font-size: clamp(1rem, 3vw, 1.125rem);
   }
 
   .text-responsive-xl {
-    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    font-size: clamp(1.125rem, 3.5vw, 1.25rem);
   }
 
   .text-responsive-2xl {
-    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
   }
 
   .text-responsive-3xl {
-    font-size: clamp(1.875rem, 6vw, 2.5rem);
+    font-size: clamp(1.5rem, 5vw, 2rem);
   }
 
   .text-responsive-4xl {
-    font-size: clamp(2.25rem, 7vw, 3rem);
+    font-size: clamp(1.875rem, 6vw, 2.5rem);
   }
 
   .text-responsive-5xl {
-    font-size: clamp(2.5rem, 8vw, 3.75rem);
+    font-size: clamp(2rem, 7vw, 3rem);
   }
 }
 
@@ -74,17 +74,17 @@ img {
   }
 
   .text-4xl {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     line-height: 1.2;
   }
 
   .text-5xl {
-    font-size: 2.25rem;
+    font-size: 1.875rem;
     line-height: 1.1;
   }
 
   .text-6xl {
-    font-size: 2.75rem;
+    font-size: 2.25rem;
     line-height: 1.05;
   }
 

@@ -116,12 +116,12 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-4 sm:mb-6">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6">
                   Protect Your Eyes with{' '}
                   <span className="text-[#4CAF50]">AI-Powered</span>{' '}
                   Monitoring
                 </h1>
-                <p className="text-lg sm:text-xl text-[#B3B3B3] mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0">
+                <p className="text-base sm:text-lg text-[#B3B3B3] mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0">
                   BlinkFit uses advanced artificial intelligence to monitor your eye health in real-time, 
                   preventing digital eye strain before it happens. Smart, proactive, and personalized.
                 </p>
@@ -204,10 +204,10 @@ const Home = () => {
         <section id="features" className="py-24 bg-[#121212] w-full">
           <div className="px-6 w-full max-w-7xl mx-auto">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 Advanced AI Technology for Your Eyes
               </h2>
-              <p className="text-xl text-[#B3B3B3]">
+              <p className="text-lg text-[#B3B3B3]">
                 BlinkFit combines cutting-edge artificial intelligence with proven eye care techniques 
                 to provide personalized protection for your vision.
               </p>
@@ -244,10 +244,10 @@ const Home = () => {
         <section id="how-it-works" className="py-24 bg-[#1E1E1E] w-full">
           <div className="px-6 w-full max-w-7xl mx-auto">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 How BlinkFit Works
               </h2>
-              <p className="text-xl text-[#B3B3B3]">
+              <p className="text-lg text-[#B3B3B3]">
                 Simple, smart, and effective eye protection in three steps
               </p>
             </div>

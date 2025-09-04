@@ -105,7 +105,7 @@ const About = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-bold text-white mb-6"
+              className="text-3xl md:text-4xl font-bold text-white mb-6"
             >
               About <span className="text-[#4CAF50]">BlinkFit</span>
             </motion.h1>
@@ -113,7 +113,7 @@ const About = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-xl text-[#B3B3B3] max-w-3xl mx-auto"
+              className="text-lg text-[#B3B3B3] max-w-3xl mx-auto"
             >
               We're on a mission to protect and improve the eye health of millions 
               of people worldwide through innovative AI-powered solutions.
