@@ -22,10 +22,28 @@ app.use(helmet({
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 1000, // Increased limit for development
   message: 'Too many requests from this IP, please try again later.',
+  skip: (req) => {
+    // Skip rate limiting for OPTIONS requests (CORS preflight)
+    return req.method === 'OPTIONS';
+  },
 });
 app.use(limiter);
+
+// CORS debugging middleware (reduced logging)
+app.use((req, res, next) => {
+  // Only log errors and important requests in development
+  if (process.env.NODE_ENV === 'development' && req.method !== 'OPTIONS') {
+    const shouldLog = req.url.includes('/api/auth/') || 
+                     req.url.includes('/api/admin/') || 
+                     req.statusCode >= 400;
+    if (shouldLog) {
+      console.log(`${req.method} ${req.url} - Origin: ${req.headers.origin || 'none'}`);
+    }
+  }
+  next();
+});
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -36,15 +54,31 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
 
+    console.log('CORS blocked origin:', origin);
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With', 
+    'Accept', 
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  maxAge: 86400, // 24 hours
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 app.use(express.json({ limit: '10mb' }));
