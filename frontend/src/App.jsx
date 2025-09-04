@@ -1,8 +1,9 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Sidebar from './components/Sidebar'
+import BlogNavbar from './components/BlogNavbar'
 import Home from './pages/Home'
 import About from './pages/About'
 import Features from './pages/Features'
@@ -10,6 +11,13 @@ import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Contact from './pages/Contact'
 import EyeHealthInsights from './pages/EyeHealthInsights'
+import DoctorLogin from './pages/DoctorLogin'
+import DoctorSignup from './pages/DoctorSignup'
+import DoctorDashboard from './pages/DoctorDashboard'
+import AdminLogin from './pages/AdminLogin'
+import AdminDashboard from './pages/AdminDashboard'
+import BlogManagement from './pages/BlogManagement'
+import BlogDetail from './pages/BlogDetail'
 import './App.css'
 
 function AppContent() {
@@ -17,6 +25,16 @@ function AppContent() {
   const [currentSection, setCurrentSection] = useState('hero')
   const location = useLocation()
   const isHomePage = location.pathname === '/'
+  
+  // Check if current path is an auth/dashboard page
+  const isAuthPage = location.pathname.startsWith('/doctor/') || location.pathname.startsWith('/admin/')
+  
+  // Check if current path should show blog navbar (blog and insights pages)
+  const isBlogPage = location.pathname.startsWith('/blog') || location.pathname.startsWith('/insights')
+  
+  // Determine which layout to use
+  const isMainWebsite = !isAuthPage && !isBlogPage
+  const showBlogNavbar = isBlogPage && !isAuthPage
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,21 +60,29 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-[#121212] relative flex flex-col">
-      <Header />
+      {/* Show header and sidebar only on main website pages */}
+      {isMainWebsite && <Header />}
+      
+      {/* Show blog navbar on blog and insights pages */}
+      {showBlogNavbar && <BlogNavbar />}
 
-      {}
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        setIsOpen={setIsSidebarOpen} 
-        currentSection={currentSection}
-        onSectionChange={setCurrentSection}
-      />
+      {/* Show sidebar on all non-auth pages */}
+      {(isMainWebsite || showBlogNavbar) && (
+        <Sidebar 
+          isOpen={isSidebarOpen} 
+          setIsOpen={setIsSidebarOpen} 
+          currentSection={currentSection}
+          onSectionChange={setCurrentSection}
+        />
+      )}
 
-      {}
+      {/* Conditionally apply margin based on whether sidebar is shown */}
       <div className={`flex-1 transition-all duration-300 ease-in-out ${
-        isSidebarOpen
+        (isMainWebsite || showBlogNavbar) && isSidebarOpen
           ? 'lg:ml-80' 
-          : 'lg:ml-20'
+          : (isMainWebsite || showBlogNavbar)
+          ? 'lg:ml-20'
+          : ''
       }`}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -67,10 +93,26 @@ function AppContent() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/insights" element={<EyeHealthInsights />} />
           <Route path="/insights/:id" element={<BlogPost />} />
+          
+          {/* Authentication Routes */}
+          <Route path="/doctor/login" element={<DoctorLogin />} />
+          <Route path="/doctor/signup" element={<DoctorSignup />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          
+          {/* Legacy route for backward compatibility */}
+          <Route path="/doctor/register" element={<DoctorSignup />} />
+          
+          {/* Dashboard Routes */}
+          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          
+          {/* Protected Admin Blog Management Routes */}
+          <Route path="/admin/blog-management" element={<BlogManagement />} />
+          <Route path="/admin/blog-detail" element={<BlogDetail />} />
         </Routes>
 
-        {}
-        <Footer />
+        {/* Show footer on main website pages and blog pages */}
+        {(isMainWebsite || showBlogNavbar) && <Footer />}
       </div>
     </div>
   )
