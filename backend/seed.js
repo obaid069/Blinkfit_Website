@@ -1,8 +1,10 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Blog from './models/Blog.js';
+import User from './models/User.js';
 
 dotenv.config();
+
 const sampleBlogs = [
   {
     title: "The Complete Guide to Digital Eye Strain: Causes, Symptoms, and Solutions",
@@ -41,10 +43,12 @@ If symptoms persist despite following these guidelines, consult with an eye care
     author: "Dr. Emily Chen",
     category: "Eye Health",
     tags: ["digital eye strain", "computer vision", "eye care", "productivity"],
-    featuredImage: "https:
+    featuredImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1950&q=80",
     readTime: 8,
     published: true,
-    featured: true
+    featured: true,
+    views: 1245,
+    likes: 89
   },
   {
     title: "AI-Powered Eye Care: How Technology is Revolutionizing Vision Health",
@@ -81,10 +85,12 @@ While AI eye care offers many benefits, it's important to ensure that systems pr
     author: "Dr. Michael Rodriguez",
     category: "Technology",
     tags: ["artificial intelligence", "eye care", "technology", "innovation"],
-    featuredImage: "https:
+    featuredImage: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     readTime: 6,
     published: true,
-    featured: true
+    featured: true,
+    views: 892,
+    likes: 67
   },
   {
     title: "5 Essential Eye Exercises to Reduce Screen Fatigue",
@@ -153,7 +159,7 @@ Regular practice can lead to:
     author: "Sarah Johnson, OD",
     category: "Tips & Tricks",
     tags: ["eye exercises", "eye strain relief", "wellness", "productivity"],
-    featuredImage: "https:
+    featuredImage: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1952&q=80",
     readTime: 5,
     published: true,
     featured: false
@@ -229,7 +235,7 @@ If you're considering blue light glasses:
     author: "Dr. James Wilson",
     category: "Eye Health",
     tags: ["blue light", "eye glasses", "science", "research"],
-    featuredImage: "https:
+    featuredImage: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     readTime: 7,
     published: true,
     featured: true
@@ -343,7 +349,7 @@ Remember, small changes can make a big difference in your eye comfort and overal
     author: "Lisa Martinez, Ergonomist",
     category: "Lifestyle",
     tags: ["home office", "ergonomics", "workplace wellness", "setup"],
-    featuredImage: "https:
+    featuredImage: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     readTime: 9,
     published: true,
     featured: false
@@ -498,7 +504,7 @@ Remember, something as simple as paying attention to your blinking can significa
     author: "Dr. Robert Kim",
     category: "Eye Health",
     tags: ["blinking", "eye anatomy", "tear film", "research"],
-    featuredImage: "https:
+    featuredImage: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
     readTime: 10,
     published: true,
     featured: false
@@ -513,24 +519,39 @@ function generateSlug(title) {
     .trim();
 }
 
+// Removed admin user creation
+
 async function seedDatabase() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
+    
+    // Clear existing data
     await Blog.deleteMany({});
-    console.log('Cleared existing blog data');
+    await User.deleteMany({ role: 'doctor' });
+    console.log('Cleared existing blog and doctor data');
+    
+    // Add missing properties to blogs (no admin needed)
     const blogsWithSlugs = sampleBlogs.map(blog => ({
       ...blog,
-      slug: generateSlug(blog.title)
+      slug: generateSlug(blog.title),
+      publishedAt: new Date(),
+      views: blog.views || Math.floor(Math.random() * 1000) + 100,
+      likes: blog.likes || Math.floor(Math.random() * 100) + 10
     }));
+    
     const createdBlogs = await Blog.insertMany(blogsWithSlugs);
-    console.log(`âœ… Successfully seeded ${createdBlogs.length} blog posts`);
+    console.log(`✅ Successfully seeded ${createdBlogs.length} blog posts`);
+    
     createdBlogs.forEach(blog => {
-      console.log(`ðŸ“ Created: "${blog.title}" (${blog.category})`);
+      console.log(`📝 Created: "${blog.title}" (${blog.category}) - ${blog.views} views`);
     });
+    
+    console.log('\n🎉 Database seeding completed successfully!');
+    
     process.exit(0);
   } catch (error) {
-    console.error('âŒ Error seeding database:', error);
+    console.error('❌ Error seeding database:', error);
     process.exit(1);
   }
 }

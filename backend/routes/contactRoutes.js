@@ -1,8 +1,9 @@
-﻿import express from 'express';
-import { body, validationResult } from 'express-validator';
+import express from 'express';
+import { body, validationResult, query } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import Contact from '../models/Contact.js';
 import nodemailer from 'nodemailer';
+import { authenticate, adminOnly } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -191,7 +192,8 @@ router.post('/', contactLimiter, contactValidation, handleValidationErrors, asyn
   }
 });
 
-router.get('/stats', async (req, res) => {
+// Admin: Get contact statistics
+router.get('/admin/stats', authenticate, adminOnly, async (req, res) => {
   try {
     const stats = await Contact.aggregate([
       {
@@ -210,6 +212,13 @@ router.get('/stats', async (req, res) => {
 
     const totalContacts = await Contact.countDocuments();
     const totalUnread = await Contact.countDocuments({ status: 'new' });
+    
+    // Recent contacts
+    const recentContacts = await Contact.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .select('name email subject type status createdAt')
+      .lean();
 
     res.json({
       success: true,
@@ -217,6 +226,7 @@ router.get('/stats', async (req, res) => {
         total: totalContacts,
         unread: totalUnread,
         byType: stats,
+        recentContacts,
       },
     });
   } catch (error) {
@@ -224,7 +234,117 @@ router.get('/stats', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching contact statistics',
-      error: error.message,
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Admin: Get all contacts with pagination
+router.get('/admin/contacts', authenticate, adminOnly, [
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  query('type').optional().isIn(['general', 'support', 'partnership', 'feedback', 'bug-report']),
+  query('status').optional().isIn(['new', 'read', 'responded']),
+  query('search').optional().isString().trim(),
+], async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      type,
+      status,
+      search
+    } = req.query;
+
+    const query = {};
+
+    if (type) {
+      query.type = type;
+    }
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { subject: { $regex: search, $options: 'i' } },
+        { message: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+    const contacts = await Contact.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean();
+
+    const totalContacts = await Contact.countDocuments(query);
+    const totalPages = Math.ceil(totalContacts / limit);
+
+    res.json({
+      success: true,
+      data: {
+        contacts,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalContacts,
+          hasNext: page < totalPages,
+          hasPrev: page > 1,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching contacts',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Admin: Update contact status
+router.patch('/admin/contacts/:id/status', authenticate, adminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['new', 'read', 'responded'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status. Must be: new, read, or responded',
+      });
+    }
+
+    const contact = await Contact.findByIdAndUpdate(
+      id,
+      { status, updatedAt: new Date() },
+      { new: true }
+    );
+
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Contact status updated successfully',
+      data: contact,
+    });
+  } catch (error) {
+    console.error('Error updating contact status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating contact status',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
     });
   }
 });
