@@ -1,18 +1,11 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Home, 
   Zap, 
-  Settings, 
-  Star, 
-  Download, 
   BookOpen,
-  Clock,
-  TrendingUp,
   Eye,
-  ChevronLeft,
-  ChevronRight,
   Menu,
   X,
   Info,
@@ -84,19 +77,12 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
     }
   ];
 
-  const stats = [
-    { label: 'Users Protected', value: '50K+', icon: Eye },
-    { label: 'Hours Monitored', value: '2M+', icon: Clock },
-    { label: 'Health Score', value: '98%', icon: TrendingUp }
-  ];
-
   useEffect(() => {
     setActiveSection(currentSection);
   }, [currentSection]);
 
   const handleSectionClick = (sectionId, isPage = false, path = null) => {
     if (isPage && path) {
-
       return;
     }
 
@@ -129,7 +115,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
 
   return (
     <>
-      {}
+      {/* Overlay for mobile */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -142,7 +128,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
         )}
       </AnimatePresence>
 
-      {}
+      {/* Toggle button */}
       <button
         onClick={toggleSidebar}
         className="lg:hidden fixed top-20 left-4 z-[10000] p-3 bg-gradient-to-r from-[#4CAF50] to-[#45a049] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
@@ -150,7 +136,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {}
+      {/* Sidebar */}
       <motion.aside
         initial={{ x: -320 }}
         animate={{ 
@@ -165,7 +151,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
         className={`fixed top-0 left-0 h-screen bg-gradient-to-br from-[#1E1E1E]/95 to-[#121212]/95 backdrop-blur-xl border-r border-[#333333]/50 shadow-2xl z-[9999] overflow-hidden`}
         style={{ width: isCompact ? 80 : 320 }}
       >
-        {}
+        {/* Header */}
         <div className="p-4 pt-20 border-b border-[#333333]/30">
           <div className="flex items-center justify-between">
             {!isCompact && (
@@ -183,11 +169,10 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                 </div>
               </motion.div>
             )}
-
           </div>
         </div>
 
-        {}
+        {/* Sidebar Items */}
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {sidebarItems.map((item, index) => {
             const Icon = item.icon;
@@ -222,7 +207,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                   )}
                 </div>
 
-                {}
+                {/* Hover background */}
                 {hoveredItem === item.id && !isActive && (
                   <motion.div
                     layoutId="hoverBackground"
@@ -233,7 +218,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                   />
                 )}
 
-                {}
+                {/* Active indicator */}
                 {isActive && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full shadow-lg" />
                 )}
@@ -271,7 +256,8 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
           })}
         </div>
 
-        {}
+        {/* Quick Stats section (commented out) */}
+        {/*
         {!isCompact && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -295,9 +281,8 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
             </div>
           </motion.div>
         )}
-
-        {}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#121212] to-transparent pointer-events-none" />
+        */}
       </motion.aside>
     </>
   );
