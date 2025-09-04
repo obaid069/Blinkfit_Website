@@ -14,6 +14,7 @@ import EyeHealthInsights from './pages/EyeHealthInsights'
 import DoctorLogin from './pages/DoctorLogin'
 import DoctorSignup from './pages/DoctorSignup'
 import DoctorDashboard from './pages/DoctorDashboard'
+import BlogPreview from './pages/BlogPreview'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import BlogManagement from './pages/BlogManagement'
@@ -104,7 +105,14 @@ function AppContent() {
           
           {/* Dashboard Routes */}
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route path="/doctor/blog/preview/:id" element={<BlogPreview />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          
+          {/* Doctor Blog Management Routes */}
+          <Route path="/doctor/blogs/create" element={<BlogManagement />} />
+          <Route path="/doctor/blogs/edit/:id" element={<BlogManagement />} />
+          <Route path="/doctor/blogs/manage" element={<BlogManagement />} />
+          <Route path="/doctor/blog-management" element={<BlogManagement />} />
           
           {/* Protected Admin Blog Management Routes */}
           <Route path="/admin/blog-management" element={<BlogManagement />} />
@@ -120,7 +128,12 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
+    <Router 
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <AppContent />
     </Router>
   )
