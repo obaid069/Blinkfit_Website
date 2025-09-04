@@ -33,6 +33,14 @@ const DoctorLogin = () => {
     setSuccess('');
   };
 
+  const handleKeyDown = (e) => {
+    // Allow Enter key to submit form only when on submit button or last field
+    if (e.key === 'Enter' && e.target.name === 'password') {
+      // Submit form when Enter is pressed in password field
+      handleSubmit(e);
+    }
+  };
+
   const validatePasswordStrength = (password) => {
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
@@ -63,10 +71,15 @@ const DoctorLogin = () => {
     setIsLoading(true);
     setError('');
 
-    // Check password strength for doctors
-    const passwordError = validatePasswordStrength(formData.password);
-    if (passwordError) {
-      setError(passwordError);
+    // Basic validation
+    if (!formData.email.trim()) {
+      setError('Email is required');
+      setIsLoading(false);
+      return;
+    }
+    
+    if (!formData.password.trim()) {
+      setError('Password is required');
       setIsLoading(false);
       return;
     }
@@ -159,14 +172,15 @@ const DoctorLogin = () => {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  className="appearance-none relative block w-full px-3 py-3 pr-12 bg-gray-800 border border-gray-700 placeholder-gray-500 text-white rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                  placeholder="Strong password required"
+                  className="appearance-none relative block w-full px-3 py-3 pr-12 bg-gray-800 border border-gray-700 placeholder-gray-500 text-white rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
+                  onKeyDown={handleKeyDown}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-colors duration-200"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-colors duration-200 z-20"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (

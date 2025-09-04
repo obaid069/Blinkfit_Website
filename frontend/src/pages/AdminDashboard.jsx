@@ -11,7 +11,8 @@ import {
   getContactStats,
   getContacts,
   updateContactStatus,
-  getAdminBlogAnalytics 
+  getAdminBlogAnalytics,
+  getAdminBlogs
 } from '../utils/api';
 import { 
   Users, 
@@ -39,6 +40,8 @@ const AdminDashboard = () => {
   const [contacts, setContacts] = useState([]);
   const [contactStats, setContactStats] = useState(null);
   const [blogAnalytics, setBlogAnalytics] = useState(null);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [blogsPagination, setBlogsPagination] = useState(null);
   const [showAddBlog, setShowAddBlog] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [showBlogModal, setShowBlogModal] = useState(false);
@@ -65,11 +68,12 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       // Load all data in parallel
-      const [doctorsRes, contactsRes, contactStatsRes, analyticsRes] = await Promise.allSettled([
+      const [doctorsRes, contactsRes, contactStatsRes, analyticsRes, allBlogsRes] = await Promise.allSettled([
         getDoctors({ limit: 10 }),
         getContacts({ limit: 10 }),
         getContactStats(),
-        getAdminBlogAnalytics()
+        getAdminBlogAnalytics(),
+        getAdminBlogs({ limit: 50 }) // Fetch up to 50 blogs for admin dashboard
       ]);
 
       if (doctorsRes.status === 'fulfilled') {
@@ -127,6 +131,16 @@ const AdminDashboard = () => {
                   console.error('Fallback blog stats failed:', fallbackError);
                   setBlogAnalytics(null);
                 }
+              }
+              
+              // Load all blogs for the blogs tab
+              if (allBlogsRes.status === 'fulfilled') {
+                setAllBlogs(allBlogsRes.value?.data?.blogs || []);
+                setBlogsPagination(allBlogsRes.value?.data?.pagination || null);
+              } else {
+                console.error('Failed to fetch all blogs:', allBlogsRes.reason);
+                setAllBlogs([]);
+                setBlogsPagination(null);
               }
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -272,7 +286,7 @@ const AdminDashboard = () => {
               }`}
             >
               <FileText className="w-5 h-5" />
-              Blog Management
+              Blog Management ({allBlogs.length})
             </button>
             <button
               onClick={() => setActiveTab('contacts')}
@@ -524,6 +538,20 @@ const AdminDashboard = () => {
                 </div>
               )}
 
+              {/* Show total count */}
+              {blogsPagination && (
+                <div className="mb-4">
+                  <p className="text-gray-400 text-sm">
+                    Showing {allBlogs.length} of {blogsPagination.totalBlogs} blogs
+                    {blogsPagination.totalPages > 1 && (
+                      <span className="ml-2 text-blue-400">
+                        (Page {blogsPagination.currentPage} of {blogsPagination.totalPages})
+                      </span>
+                    )}
+                  </p>
+                </div>
+              )}
+
               {/* Blogs List */}
               <div className="bg-[#1E1E1E] rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
@@ -539,8 +567,8 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#333333]">
-                      {blogAnalytics?.topBlogs?.length > 0 ? (
-                        blogAnalytics.topBlogs.map((blog) => (
+                      {allBlogs?.length > 0 ? (
+                        allBlogs.map((blog) => (
                           <tr key={blog._id}>
                             <td className="px-6 py-4 text-sm text-white max-w-xs">
                               <div className="truncate" title={blog.title}>
