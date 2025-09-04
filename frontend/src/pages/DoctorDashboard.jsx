@@ -18,27 +18,80 @@ const DoctorDashboard = () => {
 
   useEffect(() => {
     // Check authentication and role
-    if (!isAuthenticated() || currentUser?.role !== 'doctor') {
+    const user = getCurrentUser();
+    
+    if (!isAuthenticated() || user?.role !== 'doctor') {
       navigate('/doctor/login');
       return;
     }
 
     // Check if doctor is verified
-    if (!currentUser?.emailVerified) {
+    if (!user?.emailVerified) {
       setError('Your account is pending verification. Please wait for approval.');
       return;
     }
 
     loadBlogs();
-  }, [navigate, currentUser]);
+  }, []); // Empty dependency array - only run once on mount
 
   const loadBlogs = async () => {
     setIsLoading(true);
+    setError(''); // Clear previous errors
+    
     try {
+      console.log('🔄 Loading blogs...');
+      console.log('Current user:', currentUser);
+      
       const response = await getManageBlogs();
-      setBlogs(response.data.blogs);
+      console.log('✅ API Response received:', response);
+      
+      // Check if response has the expected structure
+      if (response && response.data && response.data.blogs) {
+        console.log('📝 Blogs found:', response.data.blogs.length);
+        setBlogs(response.data.blogs);
+        
+        if (response.data.blogs.length === 0) {
+          console.log('ℹ️ No blogs found for this doctor');
+        }
+      } else {
+        console.warn('⚠️ Unexpected response structure:', response);
+        setError('Unexpected response format from server');
+        setBlogs([]);
+      }
+      
     } catch (error) {
-      setError('Failed to load blogs');
+      console.error('❌ Error loading blogs:', error);
+      
+      let errorMessage = 'Failed to load blogs';
+      
+      if (error.response) {
+        // Server responded with error status
+        console.error('Server error status:', error.response.status);
+        console.error('Server error data:', error.response.data);
+        
+        if (error.response.status === 401) {
+          errorMessage = 'Authentication failed. Please login again.';
+          // Logout and redirect to login
+          logout();
+          navigate('/doctor/login');
+          return;
+        } else if (error.response.status === 403) {
+          errorMessage = 'Access denied. Your account may not be verified.';
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.request) {
+        // Network error
+        console.error('Network error:', error.request);
+        errorMessage = 'Network error. Please check your connection.';
+      } else {
+        // Other error
+        console.error('Other error:', error.message);
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
+      setBlogs([]);
     } finally {
       setIsLoading(false);
     }
@@ -49,6 +102,18 @@ const DoctorDashboard = () => {
     navigate('/doctor/login');
   };
 
+  const handlePreviewBlog = async (blogId) => {
+    try {
+      // Create a secure preview URL that opens in a new window
+      const previewUrl = `/doctor/blog/preview/${blogId}`;
+      window.open(previewUrl, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error('Error opening blog preview:', error);
+      setError('Failed to open blog preview');
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
   const handleDeleteBlog = async (blogId, blogTitle) => {
     if (!window.confirm(`Are you sure you want to delete "${blogTitle}"?`)) {
       return;
@@ -57,9 +122,12 @@ const DoctorDashboard = () => {
     try {
       await deleteBlog(blogId);
       setSuccess('Blog deleted successfully');
+      setTimeout(() => setSuccess(''), 3000); // Clear success message after 3 seconds
       loadBlogs(); // Reload blogs
     } catch (error) {
+      console.error('Error deleting blog:', error);
       setError('Failed to delete blog');
+      setTimeout(() => setError(''), 5000); // Clear error message after 5 seconds
     }
   };
 
@@ -144,13 +212,23 @@ const DoctorDashboard = () => {
         {/* Alerts */}
         {error && (
           <div className="mb-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded">
-            {error}
+            <div className="flex items-center">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {error}
+            </div>
           </div>
         )}
         
         {success && (
           <div className="mb-6 bg-green-900/50 border border-green-700 text-green-300 px-4 py-3 rounded">
-            {success}
+            <div className="flex items-center">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              {success}
+            </div>
           </div>
         )}
 
@@ -160,15 +238,21 @@ const DoctorDashboard = () => {
             <h2 className="text-xl font-semibold text-white">My Blogs</h2>
             <button
               onClick={() => navigate('/doctor/blogs/create')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 flex items-center"
             >
-              + Create New Blog
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Create New Blog
             </button>
           </div>
 
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <div className="flex flex-col items-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4"></div>
+                <p className="text-gray-400">Loading your blogs...</p>
+              </div>
             </div>
           ) : (
             <div className="bg-gray-900 rounded-lg overflow-hidden">
@@ -199,9 +283,9 @@ const DoctorDashboard = () => {
                     </thead>
                     <tbody className="bg-gray-900 divide-y divide-gray-800">
                       {blogs.map((blog) => (
-                        <tr key={blog._id}>
+                        <tr key={blog._id} className="hover:bg-gray-800 transition-colors">
                           <td className="px-6 py-4">
-                            <div className="text-sm font-medium text-white truncate max-w-xs">
+                            <div className="text-sm font-medium text-white truncate max-w-xs" title={blog.title}>
                               {blog.title}
                             </div>
                           </td>
@@ -220,7 +304,7 @@ const DoctorDashboard = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-300">
-                            {blog.views}
+                            {blog.views || 0}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-300">
                             {formatDate(blog.createdAt)}
@@ -229,25 +313,23 @@ const DoctorDashboard = () => {
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => navigate(`/doctor/blogs/edit/${blog._id}`)}
-                                className="text-blue-400 hover:text-blue-300 text-sm"
+                                className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleDeleteBlog(blog._id, blog.title)}
-                                className="text-red-400 hover:text-red-300 text-sm"
+                                className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
                               >
                                 Delete
                               </button>
                               {blog.published && (
-                                <a
-                                  href={`/blog/${blog.slug}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-green-400 hover:text-green-300 text-sm"
+                                <button
+                                  onClick={() => handlePreviewBlog(blog._id)}
+                                  className="text-green-400 hover:text-green-300 text-sm font-medium transition-colors"
                                 >
-                                  View
-                                </a>
+                                  Preview
+                                </button>
                               )}
                             </div>
                           </td>
@@ -269,7 +351,7 @@ const DoctorDashboard = () => {
                   </p>
                   <button
                     onClick={() => navigate('/doctor/blogs/create')}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 font-medium"
                   >
                     Create Your First Blog
                   </button>
@@ -285,28 +367,28 @@ const DoctorDashboard = () => {
           <div className="bg-gray-900 rounded-lg p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-400">Name</label>
-                <p className="text-white">{currentUser?.name}</p>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                <p className="text-white">{currentUser?.name || 'Not specified'}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400">Email</label>
-                <p className="text-white">{currentUser?.email}</p>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                <p className="text-white">{currentUser?.email || 'Not specified'}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400">Specialization</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Specialization</label>
                 <p className="text-white">{currentUser?.profile?.specialization || 'Not specified'}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400">Experience</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Experience</label>
                 <p className="text-white">{currentUser?.profile?.experience || 0} years</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400">Hospital/Clinic</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Hospital/Clinic</label>
                 <p className="text-white">{currentUser?.profile?.hospital || 'Not specified'}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400">Member Since</label>
-                <p className="text-white">{formatDate(currentUser?.createdAt)}</p>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Member Since</label>
+                <p className="text-white">{currentUser?.createdAt ? formatDate(currentUser.createdAt) : 'Unknown'}</p>
               </div>
             </div>
           </div>
