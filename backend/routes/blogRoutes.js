@@ -5,25 +5,12 @@ import path from 'path';
 import fs from 'fs';
 import Blog from '../models/Blog.js';
 import { authenticate, adminOnly, doctorOnly, adminOrDoctor, checkBlogOwnership } from '../middleware/auth.js';
+import cloudinary from '../config/cloudinary.js';
 
 const router = express.Router();
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = 'uploads/images';
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    // Generate unique filename
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'blog-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Configure multer for file uploads (memory storage for Cloudinary)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   // Check if file is an image
@@ -41,6 +28,30 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
+
+// Helper function to upload to Cloudinary
+const uploadToCloudinary = (buffer, originalname) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'blog-images',
+        resource_type: 'image',
+        transformation: [
+          { width: 1200, height: 630, crop: 'fill', quality: 'auto' },
+          { format: 'webp' }
+        ]
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    );
+    uploadStream.end(buffer);
+  });
+};
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -261,8 +272,18 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
     // Handle featured image
     let featuredImage = null;
     if (req.file) {
-      // File uploaded - use the relative file path
-      featuredImage = `/uploads/images/${req.file.filename}`;
+      // File uploaded - upload to Cloudinary
+      try {
+        featuredImage = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+        console.log('Image uploaded to Cloudinary:', featuredImage);
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading image to Cloudinary',
+          error: uploadError.message
+        });
+      }
     } else if (req.body.featuredImage) {
       // URL provided
       featuredImage = req.body.featuredImage;
@@ -302,19 +323,53 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
 });
 
 // Create new blog (Admin or Doctor)
-router.post('/manage', authenticate, adminOrDoctor, [
+router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage'), [
   body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
   body('excerpt').trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
   body('content').trim().isLength({ min: 50 }).withMessage('Content must be at least 50 characters'),
   body('category').isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
-  body('tags').optional().isArray().withMessage('Tags must be an array'),
+  body('tags').optional().custom((value) => {
+    if (Array.isArray(value)) return true;
+    if (typeof value === 'string') return true;
+    return false;
+  }).withMessage('Tags must be an array or string'),
   body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
   body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
   body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('metaTitle').optional().trim().isLength({ max: 60 }).withMessage('Meta title cannot exceed 60 characters'),
+  body('metaDescription').optional().trim().isLength({ max: 160 }).withMessage('Meta description cannot exceed 160 characters'),
 ], handleValidationErrors, async (req, res) => {
   try {
-    const { title, excerpt, content, category, tags, featuredImage, readTime, published } = req.body;
+    const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
+    let { tags } = req.body;
     const user = req.user;
+
+    // Handle tags - convert string to array if needed
+    if (typeof tags === 'string') {
+      tags = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+    } else if (!Array.isArray(tags)) {
+      tags = [];
+    }
+
+    // Handle featured image
+    let featuredImage = null;
+    if (req.file) {
+      // File uploaded - upload to Cloudinary
+      try {
+        featuredImage = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+        console.log('Image uploaded to Cloudinary:', featuredImage);
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading image to Cloudinary',
+          error: uploadError.message
+        });
+      }
+    } else if (req.body.featuredImage) {
+      // URL provided
+      featuredImage = req.body.featuredImage;
+    }
 
     // Create new blog with author information
     const blog = new Blog({
@@ -324,10 +379,12 @@ router.post('/manage', authenticate, adminOrDoctor, [
       author: user.name,
       authorId: user._id,
       category,
-      tags: tags || [],
+      tags,
       featuredImage: featuredImage || '/api/placeholder/600/400',
       readTime: readTime || Math.ceil(content.split(' ').length / 200), // Estimate based on word count
       published: published !== undefined ? published : true,
+      metaTitle: metaTitle || title,
+      metaDescription: metaDescription || excerpt,
     });
 
     await blog.save();
@@ -648,26 +705,69 @@ router.get('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, [
 });
 
 // Update blog
-router.put('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, [
+router.put('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, upload.single('featuredImage'), [
   param('id').isMongoId().withMessage('Invalid blog ID'),
   body('title').optional().trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
   body('excerpt').optional().trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
   body('content').optional().trim().isLength({ min: 50 }).withMessage('Content must be at least 50 characters'),
   body('category').optional().isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
-  body('tags').optional().isArray().withMessage('Tags must be an array'),
+  body('tags').optional().custom((value) => {
+    if (Array.isArray(value)) return true;
+    if (typeof value === 'string') return true;
+    return false;
+  }).withMessage('Tags must be an array or string'),
   body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
   body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
   body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('metaTitle').optional().trim().isLength({ max: 60 }).withMessage('Meta title cannot exceed 60 characters'),
+  body('metaDescription').optional().trim().isLength({ max: 160 }).withMessage('Meta description cannot exceed 160 characters'),
 ], handleValidationErrors, async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
+    let { tags } = req.body;
+    
+    // Handle tags - convert string to array if needed
+    if (typeof tags === 'string') {
+      tags = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+    } else if (Array.isArray(tags)) {
+      // tags is already an array, keep as is
+    } else if (tags !== undefined) {
+      tags = [];
+    }
 
-    // Remove fields that shouldn't be updated directly
-    delete updates.authorId;
-    delete updates.author;
-    delete updates.views;
-    delete updates.likes;
+    // Handle featured image
+    let featuredImage = null;
+    if (req.file) {
+      // File uploaded - upload to Cloudinary
+      try {
+        featuredImage = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+        console.log('Image uploaded to Cloudinary:', featuredImage);
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error uploading image to Cloudinary',
+          error: uploadError.message
+        });
+      }
+    } else if (req.body.featuredImage) {
+      // URL provided
+      featuredImage = req.body.featuredImage;
+    }
+
+    // Build updates object
+    const updates = {};
+    if (title !== undefined) updates.title = title;
+    if (excerpt !== undefined) updates.excerpt = excerpt;
+    if (content !== undefined) updates.content = content;
+    if (category !== undefined) updates.category = category;
+    if (tags !== undefined) updates.tags = tags;
+    if (featuredImage !== null) updates.featuredImage = featuredImage;
+    if (readTime !== undefined) updates.readTime = readTime;
+    if (published !== undefined) updates.published = published;
+    if (metaTitle !== undefined) updates.metaTitle = metaTitle;
+    if (metaDescription !== undefined) updates.metaDescription = metaDescription;
 
     // Update read time if content is changed
     if (updates.content) {
@@ -732,6 +832,60 @@ router.delete('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, [
     res.status(500).json({
       success: false,
       message: 'Error deleting blog',
+      error: error.message,
+    });
+  }
+});
+
+// Doctor-only blog preview (before public route)
+router.get('/preview/:id', authenticate, doctorOnly, [
+  param('id').isMongoId().withMessage('Invalid blog ID'),
+], handleValidationErrors, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Find blog and check ownership
+    const blog = await Blog.findById(id);
+    
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+    }
+    
+    // Only allow doctor to view their own blogs
+    if (blog.authorId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'You can only preview your own blogs',
+      });
+    }
+    
+    // Don't increment views for preview
+    const relatedBlogs = await Blog.find({
+      category: blog.category,
+      published: true,
+      authorId: req.user._id, // Only show related blogs from same doctor
+      _id: { $ne: blog._id }
+    })
+    .limit(3)
+    .select('-content')
+    .sort({ publishedAt: -1 })
+    .lean();
+    
+    res.json({
+      success: true,
+      data: {
+        blog: blog.toObject(),
+        relatedBlogs,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching blog preview:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blog preview',
       error: error.message,
     });
   }

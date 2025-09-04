@@ -9,9 +9,15 @@ const blogSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: true,
     unique: true,
     lowercase: true,
+    default: function() {
+      return this.title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .trim();
+    }
   },
   excerpt: {
     type: String,
@@ -90,7 +96,8 @@ blogSchema.virtual('url').get(function() {
 });
 
 blogSchema.pre('save', function(next) {
-  if (this.isModified('title') && !this.slug) {
+  // Generate slug if it doesn't exist or if title is modified
+  if (!this.slug || this.isModified('title')) {
     this.slug = this.title
       .toLowerCase()
       .replace(/[^a-zA-Z0-9\s]/g, '')
@@ -101,7 +108,7 @@ blogSchema.pre('save', function(next) {
     this.metaTitle = this.title.length > 60 ? this.title.substring(0, 57) + '...' : this.title;
   }
   if (!this.metaDescription) {
-    this.metaDescription = this.excerpt.length > 160 ? this.excerpt.substring(0, 157) + '...' : this.excerpt;
+    this.metaDescription = this.excerpt && this.excerpt.length > 160 ? this.excerpt.substring(0, 157) + '...' : this.excerpt;
   }
   next();
 });
