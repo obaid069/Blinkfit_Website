@@ -19,6 +19,7 @@ import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import BlogManagement from './pages/BlogManagement'
 import BlogDetail from './pages/BlogDetail'
+import IconTest from './components/IconTest'
 import './App.css'
 
 function AppContent() {
@@ -92,6 +93,7 @@ function AppContent() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/icon-test" element={<IconTest />} />
           <Route path="/insights" element={<EyeHealthInsights />} />
           <Route path="/insights/:id" element={<BlogPost />} />
           

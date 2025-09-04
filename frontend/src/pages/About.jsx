@@ -137,7 +137,13 @@ const About = () => {
                   className="text-center"
                 >
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-[#4CAF50] bg-opacity-20 rounded-full mb-4">
-                    <IconComponent className="w-8 h-8 text-[#4CAF50]" />
+                    {IconComponent ? (
+                      <IconComponent className="w-8 h-8 text-[#4CAF50]" />
+                    ) : (
+                      <div className="w-8 h-8 bg-[#4CAF50] rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        {stat.label.charAt(0)}
+                      </div>
+                    )}
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-white mb-2">
                     {stat.value}

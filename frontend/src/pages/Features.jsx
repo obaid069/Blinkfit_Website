@@ -163,7 +163,13 @@ const Features = () => {
                   className="bg-[#1E1E1E] border border-[#333333] rounded-lg p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="w-12 h-12 bg-[#4CAF50] bg-opacity-20 rounded-lg flex items-center justify-center mb-4">
-                    <IconComponent className="w-6 h-6 text-[#4CAF50]" />
+                    {IconComponent ? (
+                      <IconComponent className="w-6 h-6 text-[#4CAF50]" />
+                    ) : (
+                      <div className="w-6 h-6 bg-[#4CAF50] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                        {feature.title.charAt(0)}
+                      </div>
+                    )}
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-3">
                     {feature.title}

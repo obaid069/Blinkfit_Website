@@ -328,7 +328,13 @@ const Contact = () => {
                           className="flex items-start"
                         >
                           <div className="w-10 h-10 bg-[#4CAF50] bg-opacity-20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                            <IconComponent className="w-5 h-5 text-[#4CAF50]" />
+                            {IconComponent ? (
+                              <IconComponent className="w-5 h-5 text-[#4CAF50]" />
+                            ) : (
+                              <div className="w-5 h-5 bg-[#4CAF50] rounded-full flex items-center justify-center text-white font-bold text-xs">
+                                {item.title.charAt(0)}
+                              </div>
+                            )}
                           </div>
                           <div>
                             <h4 className="font-semibold text-white mb-1">
