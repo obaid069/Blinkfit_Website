@@ -32,7 +32,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       id: 'home',
       label: 'Home',
       icon: Home,
-      color: 'from-blue-500 to-purple-600',
+      color: 'from-[#4CAF50] to-[#45a049]',
       description: 'Welcome section',
       path: '/',
       isPage: true
@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       id: 'features',
       label: 'Features',
       icon: Zap,
-      color: 'from-green-500 to-teal-600',
+      color: 'from-[#4CAF50] to-[#45a049]',
       description: 'App capabilities',
       path: '/features',
       isPage: true
@@ -50,7 +50,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       id: 'about',
       label: 'About',
       icon: Info,
-      color: 'from-orange-500 to-red-600',
+      color: 'from-[#4CAF50] to-[#45a049]',
       description: 'About us',
       path: '/about',
       isPage: true
@@ -59,7 +59,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       id: 'blog',
       label: 'Blog',
       icon: BookOpen,
-      color: 'from-purple-500 to-pink-600',
+      color: 'from-[#4CAF50] to-[#45a049]',
       description: 'Latest articles',
       path: '/blog',
       isPage: true
@@ -68,7 +68,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       id: 'insights',
       label: 'Eye Health Tips',
       icon: Lightbulb,
-      color: 'from-teal-500 to-cyan-600',
+      color: 'from-[#4CAF50] to-[#45a049]',
       description: 'Health insights',
       path: '/insights',
       isPage: true
@@ -77,7 +77,7 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
       id: 'contact',
       label: 'Contact',
       icon: Mail,
-      color: 'from-indigo-500 to-blue-600',
+      color: 'from-[#4CAF50] to-[#45a049]',
       description: 'Get in touch',
       path: '/contact',
       isPage: true

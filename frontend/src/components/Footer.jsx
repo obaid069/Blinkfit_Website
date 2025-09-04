@@ -44,6 +44,8 @@ const Footer = () => {
       { name: 'Community', href: '/blog' },
       { name: 'Bug Report', href: '/contact' },
       { name: 'Feature Request', href: '/contact' },
+      { name: 'Doctor Login', href: '/doctor/login' },
+      { name: 'Admin Login', href: '/admin/login' },
     ],
   };
 
@@ -59,7 +61,7 @@ const Footer = () => {
       {}
       <div className="w-full px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
         <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8 lg:gap-12">
           {}
           <div className="col-span-1 lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
@@ -75,15 +77,15 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center text-sm text-[#B3B3B3]">
                 <Mail className="w-4 h-4 mr-2" />
-                <span>info@blinkfit.com</span>
+                <span>obaidzafar234@gmail.com</span>
               </div>
               <div className="flex items-center text-sm text-[#B3B3B3]">
                 <Phone className="w-4 h-4 mr-2" />
-                <span>+1 (555) 123-4567</span>
+                <span>+923165539458</span>
               </div>
               <div className="flex items-center text-sm text-[#B3B3B3]">
                 <MapPin className="w-4 h-4 mr-2" />
-                <span>San Francisco, CA</span>
+                <span>Air University, Islamabad</span>
               </div>
             </div>
           </div>
@@ -126,7 +128,26 @@ const Footer = () => {
             </ul>
           </div>
 
-          {}
+          {/* Support Section */}
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-[#B3B3B3] mb-4">
+              Support & Access
+            </h3>
+            <ul className="space-y-2">
+              {footerLinks.support.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    to={link.href}
+                    className="text-sm text-[#B3B3B3] hover:text-white transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter Section */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-[#B3B3B3] mb-4">
               Stay Updated
