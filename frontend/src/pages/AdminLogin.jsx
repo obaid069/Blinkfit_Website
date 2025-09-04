@@ -227,15 +227,6 @@ const AdminLogin = () => {
             </div>
           </div>
         </form>
-
-        {/* Admin Credentials Info for Development */}
-        <div className="text-center">
-          <div className="text-xs text-gray-500 bg-gray-800 rounded-lg p-3 border border-gray-700">
-            <p className="font-semibold text-gray-400 mb-2">Development Credentials:</p>
-            <p>Email: admin@blinkfit.com</p>
-            <p>Password: adminwow@979</p>
-          </div>
-        </div>
       </div>
     </div>
   );
