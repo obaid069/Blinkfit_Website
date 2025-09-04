@@ -39,22 +39,12 @@ const DoctorDashboard = () => {
     setError(''); // Clear previous errors
     
     try {
-      console.log('🔄 Loading blogs...');
-      console.log('Current user:', currentUser);
-      
       const response = await getManageBlogs();
-      console.log('✅ API Response received:', response);
       
       // Check if response has the expected structure
       if (response && response.data && response.data.blogs) {
-        console.log('📝 Blogs found:', response.data.blogs.length);
         setBlogs(response.data.blogs);
-        
-        if (response.data.blogs.length === 0) {
-          console.log('ℹ️ No blogs found for this doctor');
-        }
       } else {
-        console.warn('⚠️ Unexpected response structure:', response);
         setError('Unexpected response format from server');
         setBlogs([]);
       }

@@ -67,9 +67,7 @@ const BlogManagement = () => {
   const loadBlogForEdit = async () => {
     setBlogLoading(true);
     try {
-      console.log('🔄 Loading blog for edit:', blogId);
       const response = await getBlogForEdit(blogId);
-      console.log('✅ Blog loaded for edit:', response);
       
       if (response && response.data) {
         const blog = response.data;
@@ -96,7 +94,7 @@ const BlogManagement = () => {
       }
     } catch (error) {
       console.error('❌ Error loading blog for edit:', error);
-      alert('Failed to load blog data. Please try again.');
+      setError('Failed to load blog data. Please try again.');
       navigate('/doctor/dashboard');
     } finally {
       setBlogLoading(false);
