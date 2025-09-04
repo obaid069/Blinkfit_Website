@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'moderator'],
+    enum: ['user', 'admin', 'moderator', 'doctor'],
     default: 'user',
   },
   isNewsletterSubscribed: {
@@ -86,6 +86,27 @@ const userSchema = new mongoose.Schema({
         /^https?:\/\/.+/,
         'Please provide a valid website URL'
       ],
+    },
+    // Doctor-specific fields
+    specialization: {
+      type: String,
+      maxlength: [200, 'Specialization cannot exceed 200 characters'],
+    },
+    licenseNumber: {
+      type: String,
+      maxlength: [100, 'License number cannot exceed 100 characters'],
+    },
+    experience: {
+      type: Number,
+      min: [0, 'Experience cannot be negative'],
+    },
+    hospital: {
+      type: String,
+      maxlength: [200, 'Hospital name cannot exceed 200 characters'],
+    },
+    isVerifiedDoctor: {
+      type: Boolean,
+      default: false,
     },
   },
   lastLoginAt: {
