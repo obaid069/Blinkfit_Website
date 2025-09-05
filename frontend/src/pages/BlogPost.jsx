@@ -200,7 +200,7 @@ const BlogPost = () => {
           className="mb-12"
         >
           <div className="mb-6">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#4CAF50] bg-opacity-20 text-[#4CAF50]">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#4CAF50] text-white">
               {blog.category}
             </span>
           </div>
@@ -379,7 +379,7 @@ const BlogPost = () => {
                       className="w-full h-48 object-cover"
                     />
                     <div className="absolute top-4 left-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#4CAF50] text-white">
                         {relatedBlog.category}
                       </span>
                     </div>
