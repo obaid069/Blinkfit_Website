@@ -47,7 +47,8 @@ const BlogPost = () => {
     setLoading(true);
     try {
       const response = await getBlogBySlug(slug);
-      setBlog(response.data);
+      const blogData = response?.data?.blog || response?.blog || response?.data?.data?.blog || null;
+      setBlog(blogData);
     } catch (error) {
       console.error('Error fetching blog post:', error);
     } finally {
@@ -64,7 +65,8 @@ const BlogPost = () => {
         limit: 3,
         exclude: blog._id
       });
-      setRelatedBlogs(response.data.blogs);
+      const blogsArr = response?.data?.blogs || response?.blogs || response || [];
+      setRelatedBlogs(blogsArr);
     } catch (error) {
       console.error('Error fetching related blogs:', error);
     }
@@ -139,15 +141,15 @@ const BlogPost = () => {
 
   if (loading) {
   return (
-    <div className="pt-16 pl-[50px] bg-white min-h-screen">
+    <div className="pt-16 bg-[#121212] min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-3/4 mb-6"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2 mb-8"></div>
-            <div className="h-64 bg-gray-300 rounded mb-8"></div>
+            <div className="h-8 bg-[#333333] rounded w-3/4 mb-6"></div>
+            <div className="h-4 bg-[#333333] rounded w-1/2 mb-8"></div>
+            <div className="h-64 bg-[#333333] rounded mb-8"></div>
             <div className="space-y-4">
               {[...Array(8)].map((_, index) => (
-                <div key={index} className="h-4 bg-gray-300 rounded"></div>
+                <div key={index} className="h-4 bg-[#333333] rounded"></div>
               ))}
             </div>
           </div>
@@ -158,13 +160,13 @@ const BlogPost = () => {
 
   if (!blog) {
     return (
-      <div className="pt-16 min-h-screen bg-white flex items-center justify-center">
+      <div className="pt-16 min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Blog post not found</h1>
-          <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-white mb-4">Blog post not found</h1>
+          <p className="text-[#B3B3B3] mb-8">The blog post you're looking for doesn't exist.</p>
           <Link 
             to="/blog"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            className="inline-flex items-center px-4 py-2 text-[#4CAF50] border border-[#4CAF50] rounded-lg hover:bg-[#333333] transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Blog
@@ -175,13 +177,13 @@ const BlogPost = () => {
   }
 
   return (
-    <div className="pt-16 min-h-screen bg-white">
+    <div className="pt-16 min-h-screen bg-[#121212]">
       {}
-      <div className="bg-gray-50 py-4 border-b">
+      <div className="bg-[#1E1E1E] py-4 border-b border-[#333333]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
             to="/blog"
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+            className="inline-flex items-center text-[#4CAF50] hover:text-[#45a049] font-medium"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Blog
@@ -198,16 +200,16 @@ const BlogPost = () => {
           className="mb-12"
         >
           <div className="mb-6">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#4CAF50] bg-opacity-20 text-[#4CAF50]">
               {blog.category}
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
             {blog.title}
           </h1>
 
-          <div className="flex flex-wrap items-center text-gray-600 mb-8 gap-6">
+          <div className="flex flex-wrap items-center text-[#B3B3B3] mb-8 gap-6">
             <div className="flex items-center">
               <User className="w-5 h-5 mr-2" />
               <span>{blog.author}</span>
@@ -227,7 +229,7 @@ const BlogPost = () => {
           </div>
 
           {blog.excerpt && (
-            <p className="text-xl text-gray-700 leading-relaxed">
+            <p className="text-xl text-[#B3B3B3] leading-relaxed">
               {blog.excerpt}
             </p>
           )}
@@ -254,9 +256,9 @@ const BlogPost = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="prose prose-lg max-w-none mb-12"
+          className="prose prose-lg prose-invert max-w-none mb-12"
         >
-          <div className="text-gray-800 text-lg leading-relaxed">
+          <div className="text-gray-300 text-lg leading-relaxed">
             {formatContent(blog.content)}
           </div>
         </motion.div>
@@ -267,14 +269,14 @@ const BlogPost = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="mb-12"
+            className="mb-12 text-white"
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {blog.tags.map((tag) => (
                 <span 
                   key={tag}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors duration-200"
+                  className="px-3 py-1 bg-[#1E1E1E] text-[#B3B3B3] rounded-full text-sm hover:bg-[#333333] transition-colors duration-200"
                 >
                   #{tag}
                 </span>
@@ -288,14 +290,14 @@ const BlogPost = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex items-center justify-between border-t border-b border-gray-200 py-6 mb-12"
+          className="flex items-center justify-between border-t border-b border-[#333333] py-6 mb-12"
         >
           <button
             onClick={handleLike}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors duration-200 ${
               liked 
                 ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-[#1E1E1E] text-[#B3B3B3] hover:bg-[#333333]'
             }`}
           >
             <Heart className={`w-5 h-5 ${liked ? 'fill-current' : ''}`} />
@@ -305,39 +307,39 @@ const BlogPost = () => {
           <div className="relative">
             <button
               onClick={() => setShowShareMenu(!showShareMenu)}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+              className="flex items-center space-x-2 px-4 py-2 bg-[#1E1E1E] text-[#B3B3B3] rounded-lg hover:bg-[#333333] transition-colors duration-200"
             >
               <Share2 className="w-5 h-5" />
               <span>Share</span>
             </button>
 
             {showShareMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-[#1E1E1E] border border-[#333333] rounded-lg shadow-lg z-10">
                 <div className="py-1">
                   <button
                     onClick={() => handleShare('facebook')}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center w-full px-4 py-2 text-sm text-[#B3B3B3] hover:bg-[#333333]"
                   >
                     <Facebook className="w-4 h-4 mr-3" />
                     Facebook
                   </button>
                   <button
                     onClick={() => handleShare('twitter')}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center w-full px-4 py-2 text-sm text-[#B3B3B3] hover:bg-[#333333]"
                   >
                     <Twitter className="w-4 h-4 mr-3" />
                     Twitter
                   </button>
                   <button
                     onClick={() => handleShare('linkedin')}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center w-full px-4 py-2 text-sm text-[#B3B3B3] hover:bg-[#333333]"
                   >
                     <Linkedin className="w-4 h-4 mr-3" />
                     LinkedIn
                   </button>
                   <button
                     onClick={() => handleShare('copy')}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center w-full px-4 py-2 text-sm text-[#B3B3B3] hover:bg-[#333333]"
                   >
                     {copied ? (
                       <Check className="w-4 h-4 mr-3 text-green-600" />
@@ -355,7 +357,7 @@ const BlogPost = () => {
 
       {}
       {relatedBlogs.length > 0 && (
-        <section className="bg-gray-50 py-16">
+        <section className="bg-[#1E1E1E] py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
               Related Articles
@@ -368,7 +370,7 @@ const BlogPost = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className="bg-[#121212] border border-[#333333] rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="relative">
                     <img 
@@ -384,24 +386,24 @@ const BlogPost = () => {
                   </div>
 
                   <div className="p-6">
-                    <div className="flex items-center text-sm text-gray-500 mb-3">
+                    <div className="flex items-center text-sm text-[#B3B3B3] mb-3">
                       <Calendar className="w-4 h-4 mr-1" />
                       <span className="mr-4">{formatDate(relatedBlog.publishedAt)}</span>
                       <Clock className="w-4 h-4 mr-1" />
                       <span>{relatedBlog.readTime} min read</span>
                     </div>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                    <h3 className="text-xl font-semibold text-white mb-3 line-clamp-2">
                       {relatedBlog.title}
                     </h3>
 
-                    <p className="text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-[#B3B3B3] mb-4 line-clamp-3">
                       {relatedBlog.excerpt}
                     </p>
 
                     <Link 
                       to={`/blog/${relatedBlog.slug}`}
-                      className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+                      className="inline-flex items-center text-[#4CAF50] hover:text-[#45a049] font-medium"
                     >
                       Read More
                       <ArrowLeft className="w-4 h-4 ml-1 rotate-180" />
