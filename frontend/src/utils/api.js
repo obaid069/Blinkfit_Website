@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const apiBaseURL =
   import.meta.env.VITE_API_URL ||
-  (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'http://localhost:5000/api');
+  (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'https://blinkfit-website-kia-hal.vercel.app/api');
 
 const api = axios.create({
   baseURL: apiBaseURL,
