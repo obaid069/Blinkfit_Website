@@ -49,6 +49,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'https://blinkfit-website.vercel.app',
+  'https://blinkfit-official.vercel.app', // Added frontend domain
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -181,7 +182,8 @@ app.use('*', (req, res) => {
   });
 });
 
-if (process.env.NODE_ENV !== 'production') {
+// Only start server in local development (not in Vercel)
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 BlinkFit Server is running on port ${PORT}`);
     console.log(`🌟 Environment: ${process.env.NODE_ENV || 'development'}`);
