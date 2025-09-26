@@ -44,9 +44,80 @@ const Header = () => {
             <span className="text-xl font-bold text-white tracking-tight">BlinkFit</span>
           </Link>
 
-          {}
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            <Link 
+              to="/" 
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isCurrentPath('/') 
+                  ? 'text-[#4CAF50]' 
+                  : 'text-[#B3B3B3] hover:text-white'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Home className="w-4 h-4" />
+                <span>Home</span>
+              </div>
+            </Link>
+            
+            <Link 
+              to="/about" 
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isCurrentPath('/about') 
+                  ? 'text-[#4CAF50]' 
+                  : 'text-[#B3B3B3] hover:text-white'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Info className="w-4 h-4" />
+                <span>About</span>
+              </div>
+            </Link>
+            
+            <Link 
+              to="/features" 
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isCurrentPath('/features') 
+                  ? 'text-[#4CAF50]' 
+                  : 'text-[#B3B3B3] hover:text-white'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Zap className="w-4 h-4" />
+                <span>Features</span>
+              </div>
+            </Link>
+            
+            <Link 
+              to="/blog" 
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isCurrentPath('/blog') 
+                  ? 'text-[#4CAF50]' 
+                  : 'text-[#B3B3B3] hover:text-white'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Blog</span>
+              </div>
+            </Link>
+            
+            <Link 
+              to="/contact" 
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isCurrentPath('/contact') 
+                  ? 'text-[#4CAF50]' 
+                  : 'text-[#B3B3B3] hover:text-white'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>Contact</span>
+              </div>
+            </Link>
+          </nav>
 
-          {}
+          {/* Actions */}
           <div className="flex items-center space-x-4">
             <button className="hidden sm:inline-flex items-center px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#4CAF50] to-[#45a049] rounded-lg hover:from-[#45a049] hover:to-[#4CAF50] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
               <Download className="w-4 h-4 mr-2" />
@@ -63,14 +134,81 @@ const Header = () => {
         </div>
       </div>
 
-      {}
+      {/* Mobile Navigation */}
       <div className={`lg:hidden fixed inset-x-0 top-16 bg-[#1E1E1E]/95 backdrop-blur-lg border-b border-[#333333]/50 transition-all duration-300 ${
         isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
       }`}>
-        <nav className="px-4 py-4 space-y-2">
-          <div className="text-center py-8">
-            <p className="text-[#B3B3B3] text-sm mb-4">Use sidebar for navigation</p>
-            <button className="w-full flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-[#4CAF50] to-[#45a049] rounded-lg hover:from-[#45a049] hover:to-[#4CAF50] transition-all duration-200">
+        <nav className="px-4 py-4 space-y-3">
+          <Link 
+            to="/" 
+            onClick={() => setIsMenuOpen(false)}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+              isCurrentPath('/') 
+                ? 'bg-[#4CAF50]/20 text-[#4CAF50]' 
+                : 'text-[#B3B3B3] hover:text-white hover:bg-[#333333]/60'
+            }`}
+          >
+            <Home className="w-5 h-5" />
+            <span className="font-medium">Home</span>
+          </Link>
+          
+          <Link 
+            to="/about" 
+            onClick={() => setIsMenuOpen(false)}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+              isCurrentPath('/about') 
+                ? 'bg-[#4CAF50]/20 text-[#4CAF50]' 
+                : 'text-[#B3B3B3] hover:text-white hover:bg-[#333333]/60'
+            }`}
+          >
+            <Info className="w-5 h-5" />
+            <span className="font-medium">About</span>
+          </Link>
+          
+          <Link 
+            to="/features" 
+            onClick={() => setIsMenuOpen(false)}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+              isCurrentPath('/features') 
+                ? 'bg-[#4CAF50]/20 text-[#4CAF50]' 
+                : 'text-[#B3B3B3] hover:text-white hover:bg-[#333333]/60'
+            }`}
+          >
+            <Zap className="w-5 h-5" />
+            <span className="font-medium">Features</span>
+          </Link>
+          
+          <Link 
+            to="/blog" 
+            onClick={() => setIsMenuOpen(false)}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+              isCurrentPath('/blog') 
+                ? 'bg-[#4CAF50]/20 text-[#4CAF50]' 
+                : 'text-[#B3B3B3] hover:text-white hover:bg-[#333333]/60'
+            }`}
+          >
+            <BookOpen className="w-5 h-5" />
+            <span className="font-medium">Blog</span>
+          </Link>
+          
+          <Link 
+            to="/contact" 
+            onClick={() => setIsMenuOpen(false)}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+              isCurrentPath('/contact') 
+                ? 'bg-[#4CAF50]/20 text-[#4CAF50]' 
+                : 'text-[#B3B3B3] hover:text-white hover:bg-[#333333]/60'
+            }`}
+          >
+            <Mail className="w-5 h-5" />
+            <span className="font-medium">Contact</span>
+          </Link>
+          
+          <div className="pt-4 mt-4 border-t border-[#333333]/50">
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              className="w-full flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-[#4CAF50] to-[#45a049] rounded-lg hover:from-[#45a049] hover:to-[#4CAF50] transition-all duration-200"
+            >
               <Download className="w-4 h-4 mr-2" />
               Download App
             </button>
