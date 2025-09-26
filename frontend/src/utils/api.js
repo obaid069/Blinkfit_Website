@@ -5,7 +5,7 @@ const runtimeOrigin = typeof window !== 'undefined' ? window.location.origin : '
 const apiBaseURL =
   (runtimeOrigin.includes('vercel.app') && runtimeOrigin ? `${runtimeOrigin}/api` : null) ||
   import.meta.env.VITE_API_URL ||
-  (runtimeOrigin ? `${runtimeOrigin}/api` : 'https://blinkfit-website.vercel.app/api');
+  (runtimeOrigin ? `${runtimeOrigin}/api` : 'https://blinkfit-website-u64t.vercel.app/api');
 
 const api = axios.create({
   baseURL: apiBaseURL,
