@@ -94,26 +94,31 @@ app.get('/favicon.ico', (req, res) => {
 });
 
 // MongoDB connection with serverless optimization
-let isConnected = false;
-
+// Robust connection helper that avoids race conditions with bufferCommands behavior
 const connectDB = async () => {
-  if (isConnected) {
+  const state = mongoose.connection.readyState; // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+  if (state === 1) return; // already connected
+  if (state === 2) {
+    // Wait for the existing connection attempt to finish
+    await new Promise((resolve, reject) => {
+      mongoose.connection.once('connected', resolve);
+      mongoose.connection.once('error', reject);
+    });
     return;
   }
-  
+
   try {
     if (!process.env.MONGODB_URI) {
       throw new Error('MONGODB_URI is not defined in environment variables');
     }
-    
+
     await mongoose.connect(process.env.MONGODB_URI, {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      bufferCommands: false,
+      // Leave bufferCommands as default (true) to avoid early query errors during startup
     });
-    
-    isConnected = true;
+
     console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error);
@@ -121,7 +126,7 @@ const connectDB = async () => {
   }
 };
 
-// Initialize DB connection
+// Initialize DB connection (non-blocking; per-request middleware also ensures connection)
 connectDB().catch(console.error);
 
 // Middleware to ensure DB connection before each API request
