@@ -252,14 +252,18 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
     if (typeof value === 'string') return true;
     return false;
   }).withMessage('Tags must be an array or string'),
-  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
-  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).toInt().withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().toBoolean().withMessage('Published must be a boolean'),
   body('metaTitle').optional().trim().isLength({ max: 60 }).withMessage('Meta title cannot exceed 60 characters'),
   body('metaDescription').optional().trim().isLength({ max: 160 }).withMessage('Meta description cannot exceed 160 characters'),
 ], handleValidationErrors, async (req, res) => {
   try {
     const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
     let { tags } = req.body;
+
+    // Normalize types in case of multipart/form-data strings
+    const normalizedPublished = (published === true || published === 'true' || published === 1 || published === '1');
+    const normalizedReadTime = Number.isInteger(readTime) ? readTime : (parseInt(readTime, 10) || undefined);
     const user = req.user;
 
     // Handle tags - convert string to array if needed
@@ -299,8 +303,8 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
       category,
       tags,
       featuredImage: featuredImage || '/api/placeholder/600/400',
-      readTime: readTime || Math.ceil(content.split(' ').length / 200),
-      published: published !== undefined ? published : true,
+      readTime: normalizedReadTime || Math.ceil(content.split(' ').length / 200),
+      published: published !== undefined ? normalizedPublished : true,
       metaTitle: metaTitle || title,
       metaDescription: metaDescription || excerpt,
     });
@@ -314,6 +318,12 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
     });
   } catch (error) {
     console.error('Error creating blog by admin:', error);
+    if (error.code === 11000 && (error.keyPattern?.slug || error.keyValue?.slug)) {
+      return res.status(409).json({
+        success: false,
+        message: 'A blog with this title already exists. Please use a different title.',
+      });
+    }
     res.status(500).json({
       success: false,
       message: 'Error creating blog',
@@ -334,8 +344,8 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
     return false;
   }).withMessage('Tags must be an array or string'),
   body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
-  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
-  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).toInt().withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().toBoolean().withMessage('Published must be a boolean'),
   body('metaTitle').optional().trim().isLength({ max: 60 }).withMessage('Meta title cannot exceed 60 characters'),
   body('metaDescription').optional().trim().isLength({ max: 160 }).withMessage('Meta description cannot exceed 160 characters'),
 ], handleValidationErrors, async (req, res) => {
@@ -343,6 +353,10 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
     const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
     let { tags } = req.body;
     const user = req.user;
+
+    // Normalize types in case of multipart/form-data strings
+    const normalizedPublished = (published === true || published === 'true' || published === 1 || published === '1');
+    const normalizedReadTime = Number.isInteger(readTime) ? readTime : (parseInt(readTime, 10) || undefined);
 
     // Handle tags - convert string to array if needed
     if (typeof tags === 'string') {
@@ -381,8 +395,8 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
       category,
       tags,
       featuredImage: featuredImage || '/api/placeholder/600/400',
-      readTime: readTime || Math.ceil(content.split(' ').length / 200), // Estimate based on word count
-      published: published !== undefined ? published : true,
+      readTime: normalizedReadTime || Math.ceil(content.split(' ').length / 200), // Estimate based on word count
+      published: published !== undefined ? normalizedPublished : true,
       metaTitle: metaTitle || title,
       metaDescription: metaDescription || excerpt,
     });
@@ -396,6 +410,12 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
     });
   } catch (error) {
     console.error('Error creating blog:', error);
+    if (error.code === 11000 && (error.keyPattern?.slug || error.keyValue?.slug)) {
+      return res.status(409).json({
+        success: false,
+        message: 'A blog with this title already exists. Please use a different title.',
+      });
+    }
     res.status(500).json({
       success: false,
       message: 'Error creating blog',
@@ -522,13 +542,25 @@ router.put('/admin/manage/:id', authenticate, adminOnly, [
   body('category').optional().isIn(['Eye Health', 'Technology', 'Lifestyle', 'Tips & Tricks', 'App Features']).withMessage('Invalid category'),
   body('tags').optional().isArray().withMessage('Tags must be an array'),
   body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
-  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
-  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
-  body('featured').optional().isBoolean().withMessage('Featured must be a boolean'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).toInt().withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().toBoolean().withMessage('Published must be a boolean'),
+  body('featured').optional().isBoolean().toBoolean().withMessage('Featured must be a boolean'),
 ], handleValidationErrors, async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+
+    // Normalize types for booleans/ints if coming as strings
+    if (updates.published !== undefined) {
+      updates.published = (updates.published === true || updates.published === 'true' || updates.published === 1 || updates.published === '1');
+    }
+    if (updates.featured !== undefined) {
+      updates.featured = (updates.featured === true || updates.featured === 'true' || updates.featured === 1 || updates.featured === '1');
+    }
+    if (updates.readTime !== undefined && typeof updates.readTime !== 'number') {
+      const rt = parseInt(updates.readTime, 10);
+      updates.readTime = Number.isNaN(rt) ? undefined : rt;
+    }
 
     // Admin can update views and likes, but not authorId
     delete updates.authorId;
@@ -717,8 +749,8 @@ router.put('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, upload.s
     return false;
   }).withMessage('Tags must be an array or string'),
   body('featuredImage').optional().isString().withMessage('Featured image must be a string'),
-  body('readTime').optional().isInt({ min: 1, max: 60 }).withMessage('Read time must be between 1 and 60 minutes'),
-  body('published').optional().isBoolean().withMessage('Published must be a boolean'),
+  body('readTime').optional().isInt({ min: 1, max: 60 }).toInt().withMessage('Read time must be between 1 and 60 minutes'),
+  body('published').optional().isBoolean().toBoolean().withMessage('Published must be a boolean'),
   body('metaTitle').optional().trim().isLength({ max: 60 }).withMessage('Meta title cannot exceed 60 characters'),
   body('metaDescription').optional().trim().isLength({ max: 160 }).withMessage('Meta description cannot exceed 160 characters'),
 ], handleValidationErrors, async (req, res) => {
@@ -726,6 +758,10 @@ router.put('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, upload.s
     const { id } = req.params;
     const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
     let { tags } = req.body;
+
+    // Normalize types in case of multipart/form-data strings
+    const normalizedPublished = (published === true || published === 'true' || published === 1 || published === '1');
+    const normalizedReadTime = Number.isInteger(readTime) ? readTime : (parseInt(readTime, 10) || undefined);
     
     // Handle tags - convert string to array if needed
     if (typeof tags === 'string') {
@@ -764,8 +800,8 @@ router.put('/manage/:id', authenticate, doctorOnly, checkBlogOwnership, upload.s
     if (category !== undefined) updates.category = category;
     if (tags !== undefined) updates.tags = tags;
     if (featuredImage !== null) updates.featuredImage = featuredImage;
-    if (readTime !== undefined) updates.readTime = readTime;
-    if (published !== undefined) updates.published = published;
+    if (normalizedReadTime !== undefined) updates.readTime = normalizedReadTime;
+    if (published !== undefined) updates.published = normalizedPublished;
     if (metaTitle !== undefined) updates.metaTitle = metaTitle;
     if (metaDescription !== undefined) updates.metaDescription = metaDescription;
 
