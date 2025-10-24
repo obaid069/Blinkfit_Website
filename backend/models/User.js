@@ -87,7 +87,6 @@ const userSchema = new mongoose.Schema({
         'Please provide a valid website URL'
       ],
     },
-    // Doctor-specific fields
     specialization: {
       type: String,
       maxlength: [200, 'Specialization cannot exceed 200 characters'],
@@ -170,7 +169,7 @@ userSchema.methods.createPasswordResetToken = function() {
     }
     
     this.passwordResetToken = bcrypt.hashSync(resetToken, 10);
-    this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
     
     return resetToken;
   } catch (error) {
@@ -185,7 +184,6 @@ userSchema.methods.updateLastLogin = async function() {
     return await this.save({ validateBeforeSave: false });
   } catch (error) {
     console.error('❌ Error updating last login time:', error.message);
-    // Don't throw - this is not critical for authentication flow
     return this;
   }
 };
