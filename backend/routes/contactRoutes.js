@@ -19,20 +19,44 @@ const contactLimiter = rateLimit({
 });
 
 const createEmailTransporter = () => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn('Email configuration missing. Contact emails will not be sent.');
+  try {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.warn('⚠️  Warning: Email configuration missing. Contact emails will not be sent.');
+      console.warn('Required: EMAIL_USER, EMAIL_PASS, EMAIL_HOST, EMAIL_PORT');
+      return null;
+    }
+
+    if (!process.env.EMAIL_HOST || !process.env.EMAIL_PORT) {
+      console.warn('⚠️  Warning: EMAIL_HOST or EMAIL_PORT not configured. Using defaults.');
+    }
+
+    const transporter = nodemailer.createTransporter({
+      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.EMAIL_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false // For development only
+      }
+    });
+
+    // Verify transporter configuration
+    transporter.verify((error, success) => {
+      if (error) {
+        console.error('❌ Email transporter verification failed:', error.message);
+      } else {
+        console.log('✅ Email transporter configured successfully');
+      }
+    });
+
+    return transporter;
+  } catch (error) {
+    console.error('❌ Error creating email transporter:', error.message);
     return null;
   }
-
-  return nodemailer.createTransporter({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
 };
 
 const handleValidationErrors = (req, res, next) => {
@@ -101,20 +125,24 @@ router.post('/', contactLimiter, contactValidation, handleValidationErrors, asyn
     const transporter = createEmailTransporter();
     if (transporter) {
       try {
+        // Sanitize user input for HTML injection
+        const sanitizedName = name.replace(/[<>]/g, '');
+        const sanitizedSubject = subject.replace(/[<>]/g, '');
+        const sanitizedMessage = message.replace(/[<>]/g, '');
 
         const adminMailOptions = {
           from: process.env.EMAIL_USER,
           to: process.env.EMAIL_USER,
-          subject: `New Contact Form Submission: ${subject}`,
+          subject: `New Contact Form Submission: ${sanitizedSubject}`,
           html: `
             <h2>New Contact Form Submission</h2>
-            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Name:</strong> ${sanitizedName}</p>
             <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Subject:</strong> ${sanitizedSubject}</p>
             <p><strong>Type:</strong> ${type}</p>
             <p><strong>Message:</strong></p>
             <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">
-              ${message.replace(/\n/g, '<br>')}
+              ${sanitizedMessage.replace(/\n/g, '<br>')}
             </div>
             <hr>
             <p><small>IP: ${ipAddress}</small></p>
@@ -129,12 +157,12 @@ router.post('/', contactLimiter, contactValidation, handleValidationErrors, asyn
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #2563eb;">Thank you for contacting BlinkFit!</h2>
-              <p>Hi ${name},</p>
+              <p>Hi ${sanitizedName},</p>
               <p>We've received your message and will get back to you as soon as possible.</p>
 
               <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h3>Your Message Details:</h3>
-                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>Subject:</strong> ${sanitizedSubject}</p>
                 <p><strong>Type:</strong> ${type}</p>
               </div>
 
@@ -155,14 +183,20 @@ router.post('/', contactLimiter, contactValidation, handleValidationErrors, asyn
         };
 
         await Promise.all([
-          transporter.sendMail(adminMailOptions),
-          transporter.sendMail(userMailOptions),
+          transporter.sendMail(adminMailOptions).catch(err => {
+            console.error('❌ Failed to send admin notification email:', err.message);
+            throw err;
+          }),
+          transporter.sendMail(userMailOptions).catch(err => {
+            console.error('❌ Failed to send user confirmation email:', err.message);
+            throw err;
+          }),
         ]);
 
-        console.log(`Contact form notification emails sent for: ${email}`);
+        console.log(`✅ Contact form notification emails sent for: ${email}`);
       } catch (emailError) {
-        console.error('Error sending contact notification emails:', emailError);
-
+        console.error('❌ Error sending contact notification emails:', emailError.message);
+        // Don't fail the request if email fails - contact is already saved
       }
     }
 
@@ -314,6 +348,14 @@ router.patch('/admin/contacts/:id/status', authenticate, adminOnly, async (req, 
     const { id } = req.params;
     const { status } = req.body;
 
+    // Validate MongoDB ObjectId
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid contact ID format',
+      });
+    }
+
     if (!['new', 'read', 'responded'].includes(status)) {
       return res.status(400).json({
         success: false,
@@ -324,7 +366,7 @@ router.patch('/admin/contacts/:id/status', authenticate, adminOnly, async (req, 
     const contact = await Contact.findByIdAndUpdate(
       id,
       { status, updatedAt: new Date() },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!contact) {
@@ -340,7 +382,7 @@ router.patch('/admin/contacts/:id/status', authenticate, adminOnly, async (req, 
       data: contact,
     });
   } catch (error) {
-    console.error('Error updating contact status:', error);
+    console.error('Error updating contact status:', error.message);
     res.status(500).json({
       success: false,
       message: 'Error updating contact status',
