@@ -75,10 +75,8 @@ contactSchema.virtual('displayName').get(function() {
   return this.name || 'Anonymous User';
 });
 
-// Pre-save hook for sanitization and validation
 contactSchema.pre('save', function(next) {
   try {
-    // Trim and sanitize text fields
     if (this.name) {
       this.name = this.name.trim();
     }
@@ -95,12 +93,10 @@ contactSchema.pre('save', function(next) {
       this.message = this.message.trim();
     }
 
-    // Sanitize notes if present
     if (this.notes) {
       this.notes = this.notes.trim();
     }
 
-    // Validate required fields
     if (!this.name || this.name.length === 0) {
       return next(new Error('Name is required'));
     }
