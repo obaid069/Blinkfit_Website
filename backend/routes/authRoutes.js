@@ -1,5 +1,6 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 import { generateToken, authenticate, adminOnly } from '../middleware/auth.js';
 
@@ -15,6 +16,11 @@ const handleValidationErrors = (req, res, next) => {
     });
   }
   next();
+};
+
+// Helper function to validate MongoDB ObjectId
+const isValidObjectId = (id) => {
+  return mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === id;
 };
 
 // Doctor Registration
@@ -340,6 +346,14 @@ router.put('/admin/doctors/:id/verify', authenticate, adminOnly, async (req, res
     const { id } = req.params;
     const { reason } = req.body;
 
+    // Validate MongoDB ObjectId
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid doctor ID format',
+      });
+    }
+
     const doctor = await User.findOne({ _id: id, role: 'doctor' });
     if (!doctor) {
       return res.status(404).json({
@@ -394,6 +408,14 @@ router.put('/admin/doctors/:id/unverify', authenticate, adminOnly, async (req, r
     const { id } = req.params;
     const { reason } = req.body;
 
+    // Validate MongoDB ObjectId
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid doctor ID format',
+      });
+    }
+
     const doctor = await User.findOne({ _id: id, role: 'doctor' });
     if (!doctor) {
       return res.status(404).json({
@@ -446,6 +468,14 @@ router.put('/admin/doctors/:id/unverify', authenticate, adminOnly, async (req, r
 router.delete('/admin/doctors/:id', authenticate, adminOnly, async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Validate MongoDB ObjectId
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid doctor ID format',
+      });
+    }
 
     const doctor = await User.findOne({ _id: id, role: 'doctor' });
     if (!doctor) {
