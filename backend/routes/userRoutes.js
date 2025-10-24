@@ -18,20 +18,44 @@ const newsletterLimiter = rateLimit({
 });
 
 const createEmailTransporter = () => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn('Email configuration missing. Newsletter emails will not be sent.');
+  try {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.warn('⚠️  Warning: Email configuration missing. Newsletter emails will not be sent.');
+      console.warn('Required: EMAIL_USER, EMAIL_PASS, EMAIL_HOST, EMAIL_PORT');
+      return null;
+    }
+
+    if (!process.env.EMAIL_HOST || !process.env.EMAIL_PORT) {
+      console.warn('⚠️  Warning: EMAIL_HOST or EMAIL_PORT not configured. Using defaults.');
+    }
+
+    const transporter = nodemailer.createTransporter({
+      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.EMAIL_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false // For development only
+      }
+    });
+
+    // Verify transporter configuration
+    transporter.verify((error, success) => {
+      if (error) {
+        console.error('❌ Email transporter verification failed:', error.message);
+      } else {
+        console.log('✅ Email transporter configured successfully');
+      }
+    });
+
+    return transporter;
+  } catch (error) {
+    console.error('❌ Error creating email transporter:', error.message);
     return null;
   }
-
-  return nodemailer.createTransporter({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
 };
 
 const handleValidationErrors = (req, res, next) => {
@@ -104,14 +128,17 @@ router.post('/newsletter/subscribe',
           await user.save();
         }
       }
-
       const transporter = createEmailTransporter();
       if (transporter) {
         try {
+          // Sanitize user input for HTML injection
+          const sanitizedName = (name || 'there').replace(/[<>]/g, '');
+          const sanitizedInterests = interests.map(interest => interest.replace(/[<>]/g, ''));
+
           const welcomeEmailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'Welcome to BlinkFit Newsletter! ðŸ‘ï¸',
+            subject: 'Welcome to BlinkFit Newsletter! 👁️',
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8fafc; padding: 20px;">
                 <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -120,8 +147,8 @@ router.post('/newsletter/subscribe',
                     <p style="color: #64748b; margin: 5px 0;">AI-Powered Eye Health</p>
                   </div>
 
-                  <h2 style="color: #334155;">Welcome to BlinkFit Newsletter! ðŸŽ‰</h2>
-                  <p>Hi ${name || 'there'},</p>
+                  <h2 style="color: #334155;">Welcome to BlinkFit Newsletter! 🎉</h2>
+                  <p>Hi ${sanitizedName},</p>
 
                   <p>Thank you for subscribing to the BlinkFit newsletter! You're now part of our community focused on protecting and improving eye health through AI technology.</p>
 
@@ -135,8 +162,8 @@ router.post('/newsletter/subscribe',
                     </ul>
                   </div>
 
-                  ${interests.length > 0 ? `
-                    <p><strong>Your interests:</strong> ${interests.map(interest => interest.replace('-', ' ')).join(', ')}</p>
+                  ${sanitizedInterests.length > 0 ? `
+                    <p><strong>Your interests:</strong> ${sanitizedInterests.map(interest => interest.replace('-', ' ')).join(', ')}</p>
                   ` : ''}
 
                   <div style="text-align: center; margin: 30px 0;">
@@ -159,11 +186,14 @@ router.post('/newsletter/subscribe',
             `,
           };
 
-          await transporter.sendMail(welcomeEmailOptions);
-          console.log(`Welcome email sent to: ${email}`);
+          await transporter.sendMail(welcomeEmailOptions).catch(err => {
+            console.error('❌ Failed to send welcome email:', err.message);
+            throw err;
+          });
+          console.log(`✅ Welcome email sent to: ${email}`);
         } catch (emailError) {
-          console.error('Error sending welcome email:', emailError);
-
+          console.error('❌ Error sending welcome email:', emailError.message);
+          // Don't fail the request if email fails - subscription is already saved
         }
       }
 
