@@ -44,26 +44,26 @@ const Home = () => {
   const features = [
     {
       icon: Eye,
-      title: 'AI Eye Monitoring',
-      description: 'Advanced AI tracks your blinking patterns, eye strain, and fatigue in real-time.',
+      title: 'AI-Powered Blink Detection',
+      description: 'Advanced computer vision technology tracks your blink rate in real-time using your device camera.',
       color: 'bg-blue-100 text-blue-600'
     },
     {
-      icon: Brain,
-      title: 'Smart Alerts',
-      description: 'Intelligent notifications remind you to take breaks and perform eye exercises.',
+      icon: Zap,
+      title: 'Smart Eye Exercise Recommendations',
+      description: 'Personalized exercise routines based on your usage patterns and eye health needs.',
       color: 'bg-green-100 text-green-600'
     },
     {
-      icon: Shield,
-      title: 'Proactive Protection',
-      description: 'Prevent eye problems before they start with personalized recommendations.',
+      icon: Bell,
+      title: 'Intelligent Break Reminders',
+      description: 'Smart notifications that adapt to your work patterns and remind you to take healthy breaks.',
       color: 'bg-purple-100 text-purple-600'
     },
     {
-      icon: Clock,
-      title: '24/7 Monitoring',
-      description: 'Continuous background monitoring without affecting device performance.',
+      icon: BarChart3,
+      title: 'Comprehensive Analytics',
+      description: 'Detailed insights into your digital eye health with trends, patterns, and improvement suggestions.',
       color: 'bg-orange-100 text-orange-600'
     }
   ];
@@ -213,7 +213,7 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
@@ -222,12 +222,12 @@ const Home = () => {
                     initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="text-center group"
+                    className="text-center group p-4 rounded-xl hover:bg-[#1E1E1E] transition-colors duration-300"
                   >
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#4CAF50] bg-opacity-20 mb-5 group-hover:scale-110 transition-transform duration-200">
-                      <Icon className="w-6 h-6 text-[#4CAF50]" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-[#4CAF50] to-[#45a049] mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-[#4CAF50]/30">
+                      {Icon && <Icon className="w-8 h-8 md:w-10 md:h-10 text-white" strokeWidth={2} style={{ strokeWidth: 2 }} />}
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">
+                    <h3 className="text-base md:text-lg font-semibold text-white mb-2">
                       {feature.title}
                     </h3>
                     <p className="text-sm text-[#B3B3B3] leading-relaxed">
@@ -411,11 +411,7 @@ const Home = () => {
                 Download the app today and start your journey to better vision.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button className="inline-flex items-center px-6 py-3 text-base font-semibold text-[#121212] bg-white rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download for iOS
-                </button>
-                <button className="inline-flex items-center px-6 py-3 text-base font-semibold text-blue-600 bg-white rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                <button className="inline-flex items-center px-6 py-3 text-base font-semibold text-black bg-white rounded-lg hover:bg-gray-50 transition-colors duration-200">
                   <Download className="w-4 h-4 mr-2" />
                   Download for Android
                 </button>
