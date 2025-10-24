@@ -3,9 +3,28 @@ import User from '../models/User.js';
 
 // Generate JWT token
 export const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET || 'blinkfit-secret-key', {
-    expiresIn: process.env.JWT_EXPIRE || '7d',
-  });
+  try {
+    if (!userId) {
+      throw new Error('User ID is required to generate token');
+    }
+
+    const jwtSecret = process.env.JWT_SECRET || 'blinkfit-secret-key';
+    
+    if (!process.env.JWT_SECRET) {
+      console.warn('⚠️  Warning: JWT_SECRET not set in environment variables. Using default key.');
+    }
+
+    return jwt.sign(
+      { userId }, 
+      jwtSecret, 
+      {
+        expiresIn: process.env.JWT_EXPIRE || '7d',
+      }
+    );
+  } catch (error) {
+    console.error('❌ Error generating JWT token:', error.message);
+    throw new Error('Failed to generate authentication token');
+  }
 };
 
 // Verify JWT token middleware
@@ -20,23 +39,57 @@ export const authenticate = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'blinkfit-secret-key');
-    const user = await User.findById(decoded.userId).select('+password');
+    // Verify token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'blinkfit-secret-key');
+    } catch (jwtError) {
+      if (jwtError.name === 'TokenExpiredError') {
+        return res.status(401).json({
+          success: false,
+          message: 'Token has expired. Please login again.',
+        });
+      } else if (jwtError.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid token. Please login again.',
+        });
+      }
+      throw jwtError;
+    }
 
-    if (!user || !user.isActive) {
+    if (!decoded || !decoded.userId) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token or user not found',
+        message: 'Invalid token payload',
+      });
+    }
+
+    // Find user
+    const user = await User.findById(decoded.userId).select('+password');
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found. Token may be invalid.',
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'User account is deactivated',
       });
     }
 
     req.user = user;
     next();
   } catch (error) {
-    console.error('Authentication error:', error);
+    console.error('Authentication error:', error.message);
     res.status(401).json({
       success: false,
-      message: 'Invalid or expired token',
+      message: 'Authentication failed',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 };
