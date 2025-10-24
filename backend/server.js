@@ -46,10 +46,10 @@ app.use((req, res, next) => {
 });
 
 const allowedOrigins = [
-  'http://localhost:3000',
   'http://localhost:5173',
-  'https://blinkfit-website.vercel.app',
-  'https://blinkfit-official.vercel.app', // Added frontend domain
+  'https://blinkfit-official.vercel.app',
+  'https://www.blinkfit.site',
+  'https://blinkfit.site',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -62,7 +62,7 @@ app.use(cors({
       return callback(null, true);
     }
 
-    console.log('CORS blocked origin:', origin);
+    // Don't log origin URL to prevent exposure in browser console
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
