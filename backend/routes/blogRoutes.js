@@ -32,24 +32,56 @@ const upload = multer({
 // Helper function to upload to Cloudinary
 const uploadToCloudinary = (buffer, originalname) => {
   return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: 'blog-images',
-        resource_type: 'image',
-        transformation: [
-          { width: 1200, height: 630, crop: 'fill', quality: 'auto' },
-          { format: 'webp' }
-        ]
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
+    try {
+      // Validate input
+      if (!buffer || buffer.length === 0) {
+        return reject(new Error('Invalid buffer: Buffer is empty or undefined'));
+      }
+
+      if (!originalname) {
+        return reject(new Error('Original filename is required'));
+      }
+
+      // Check if cloudinary is configured
+      if (!cloudinary.config().cloud_name) {
+        return reject(new Error('Cloudinary is not properly configured'));
+      }
+
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'blog-images',
+          resource_type: 'image',
+          transformation: [
+            { width: 1200, height: 630, crop: 'fill', quality: 'auto' },
+            { format: 'webp' }
+          ],
+          public_id: `blog-${Date.now()}-${originalname.split('.')[0]}`,
+        },
+        (error, result) => {
+          if (error) {
+            console.error('❌ Cloudinary upload error:', error.message);
+            return reject(new Error(`Cloudinary upload failed: ${error.message}`));
+          }
+          
+          if (!result || !result.secure_url) {
+            return reject(new Error('Cloudinary upload succeeded but no URL returned'));
+          }
+          
+          console.log('✅ Image uploaded successfully to Cloudinary');
           resolve(result.secure_url);
         }
-      }
-    );
-    uploadStream.end(buffer);
+      );
+
+      uploadStream.on('error', (streamError) => {
+        console.error('❌ Upload stream error:', streamError.message);
+        reject(new Error(`Upload stream error: ${streamError.message}`));
+      });
+
+      uploadStream.end(buffer);
+    } catch (error) {
+      console.error('❌ Error in uploadToCloudinary:', error.message);
+      reject(new Error(`Failed to initiate upload: ${error.message}`));
+    }
   });
 };
 
