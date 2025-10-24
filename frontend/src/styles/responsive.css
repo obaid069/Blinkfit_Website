@@ -1,0 +1,438 @@
+/* ===================================================================
+   COMPREHENSIVE RESPONSIVE DESIGN UTILITIES
+   Supports screens from 280px to 4K+ displays
+   =================================================================== */
+
+/* ============ BREAKPOINT REFERENCE ============
+   xs:  280px - 374px   (Small phones)
+   sm:  375px - 639px   (Standard phones)
+   md:  640px - 767px   (Large phones / Small tablets)
+   lg:  768px - 1023px  (Tablets)
+   xl:  1024px - 1279px (Small laptops)
+   2xl: 1280px - 1535px (Desktop)
+   3xl: 1536px - 1919px (Large desktop)
+   4xl: 1920px+         (4K displays)
+   ================================================ */
+
+@layer utilities {
+  /* ============ FLUID TYPOGRAPHY ============ */
+  .text-fluid-xs {
+    font-size: clamp(0.625rem, 0.5rem + 0.5vw, 0.75rem);
+  }
+
+  .text-fluid-sm {
+    font-size: clamp(0.75rem, 0.65rem + 0.5vw, 0.875rem);
+  }
+
+  .text-fluid-base {
+    font-size: clamp(0.875rem, 0.8rem + 0.5vw, 1rem);
+  }
+
+  .text-fluid-lg {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  }
+
+  .text-fluid-xl {
+    font-size: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+  }
+
+  .text-fluid-2xl {
+    font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  }
+
+  .text-fluid-3xl {
+    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 1.875rem);
+  }
+
+  .text-fluid-4xl {
+    font-size: clamp(1.875rem, 1.5rem + 1.875vw, 2.25rem);
+  }
+
+  .text-fluid-5xl {
+    font-size: clamp(2.25rem, 1.8rem + 2.25vw, 3rem);
+  }
+
+  .text-fluid-6xl {
+    font-size: clamp(2.5rem, 2rem + 2.5vw, 3.75rem);
+  }
+
+  .text-fluid-7xl {
+    font-size: clamp(3rem, 2.5rem + 2.5vw, 4.5rem);
+  }
+
+  /* ============ FLUID SPACING ============ */
+  .space-fluid-xs {
+    padding: clamp(0.5rem, 1vw, 0.75rem);
+  }
+
+  .space-fluid-sm {
+    padding: clamp(0.75rem, 1.5vw, 1rem);
+  }
+
+  .space-fluid-md {
+    padding: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .space-fluid-lg {
+    padding: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .space-fluid-xl {
+    padding: clamp(2rem, 4vw, 3rem);
+  }
+
+  .space-fluid-2xl {
+    padding: clamp(3rem, 5vw, 4rem);
+  }
+
+  /* ============ CONTAINER SIZES ============ */
+  .container-responsive {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+  }
+
+  .container-xs {
+    max-width: 475px;
+  }
+
+  .container-sm {
+    max-width: 640px;
+  }
+
+  .container-md {
+    max-width: 768px;
+  }
+
+  .container-lg {
+    max-width: 1024px;
+  }
+
+  .container-xl {
+    max-width: 1280px;
+  }
+
+  .container-2xl {
+    max-width: 1536px;
+  }
+
+  /* ============ RESPONSIVE GRID ============ */
+  .grid-responsive {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .grid-responsive-lg {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  /* ============ TOUCH-FRIENDLY ELEMENTS ============ */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 1rem 1.5rem;
+  }
+}
+
+/* ============ EXTRA SMALL DEVICES (280px - 374px) ============ */
+@media (max-width: 374px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 1.875rem) !important;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 4vw, 1.5rem) !important;
+  }
+
+  h3 {
+    font-size: clamp(1.125rem, 3.5vw, 1.25rem) !important;
+  }
+
+  .text-6xl {
+    font-size: 2rem !important;
+  }
+
+  .text-5xl {
+    font-size: 1.75rem !important;
+  }
+
+  .text-4xl {
+    font-size: 1.5rem !important;
+  }
+
+  .py-20 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .py-16 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .px-8 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  button,
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem;
+  }
+}
+
+/* ============ SMALL PHONES (375px - 639px) ============ */
+@media (min-width: 375px) and (max-width: 639px) {
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .gap-8 {
+    gap: 1.25rem;
+  }
+
+  .space-y-8 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1.5rem;
+  }
+}
+
+/* ============ TABLETS (640px - 1023px) ============ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .grid-responsive {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ============ SMALL LAPTOPS (1024px - 1279px) ============ */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .container {
+    max-width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ============ DESKTOP (1280px - 1535px) ============ */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .container {
+    max-width: 1280px;
+  }
+
+  .text-7xl {
+    font-size: 4.5rem;
+  }
+}
+
+/* ============ LARGE DESKTOP (1536px - 1919px) ============ */
+@media (min-width: 1536px) and (max-width: 1919px) {
+  .container {
+    max-width: 1536px;
+  }
+
+  .text-fluid-7xl {
+    font-size: clamp(3.5rem, 4vw, 5rem);
+  }
+}
+
+/* ============ 4K+ DISPLAYS (1920px+) ============ */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1920px;
+  }
+
+  body {
+    font-size: 18px;
+  }
+
+  .text-base {
+    font-size: 1.125rem;
+  }
+
+  .text-lg {
+    font-size: 1.25rem;
+  }
+}
+
+/* ============ LANDSCAPE ORIENTATION ============ */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .min-h-screen {
+    min-height: auto;
+  }
+
+  .py-20 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .py-16 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  section {
+    padding-top: clamp(2rem, 5vh, 3rem);
+    padding-bottom: clamp(2rem, 5vh, 3rem);
+  }
+}
+
+/* ============ HIGH DPI SCREENS (Retina) ============ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .border {
+    border-width: 0.5px;
+  }
+
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* ============ TOUCH DEVICES ============ */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a[role="button"],
+  input[type="button"],
+  input[type="submit"],
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Increase tap targets */
+  .clickable {
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover effects on touch devices */
+  .hover\:scale-105:hover {
+    transform: none;
+  }
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  img {
+    page-break-inside: avoid;
+    max-width: 100% !important;
+  }
+
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}
+
+/* ============ UTILITY CLASSES ============ */
+.aspect-ratio-16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-ratio-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect-ratio-1-1 {
+  aspect-ratio: 1 / 1;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.object-fit-contain {
+  object-fit: contain;
+}
+
+/* ============ ACCESSIBILITY ============ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.focus-visible {
+  outline: 2px solid #4CAF50;
+  outline-offset: 2px;
+}
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #4CAF50;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
