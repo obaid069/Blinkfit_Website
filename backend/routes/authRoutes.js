@@ -18,12 +18,10 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-// Helper function to validate MongoDB ObjectId
 const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === id;
 };
 
-// Doctor Registration
 router.post('/register/doctor', [
   body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
   body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
@@ -36,7 +34,6 @@ router.post('/register/doctor', [
   try {
     const { name, email, password, specialization, licenseNumber, experience, hospital } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -45,7 +42,6 @@ router.post('/register/doctor', [
       });
     }
 
-    // Create new doctor
     const doctor = new User({
       name,
       email,
@@ -57,12 +53,11 @@ router.post('/register/doctor', [
         experience: experience || 0,
         hospital: hospital || '',
       },
-      emailVerified: false, // Requires admin verification
+      emailVerified: false,
     });
 
     await doctor.save();
 
-    // Don't include password in response
     const doctorResponse = doctor.toObject();
     delete doctorResponse.password;
 
@@ -83,7 +78,6 @@ router.post('/register/doctor', [
   }
 });
 
-// Admin Login
 router.post('/admin/login', [
   body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required'),
@@ -91,7 +85,6 @@ router.post('/admin/login', [
   try {
     const { email, password } = req.body;
 
-    // Find admin user and include password for comparison
     const user = await User.findOne({ email, role: 'admin' }).select('+password');
 
     if (!user) {
@@ -101,7 +94,6 @@ router.post('/admin/login', [
       });
     }
 
-    // Check if admin is active
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
@@ -109,7 +101,6 @@ router.post('/admin/login', [
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -118,13 +109,10 @@ router.post('/admin/login', [
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
-    // Update last login
     await user.updateLastLogin();
 
-    // Don't include password in response
     const userResponse = user.toObject();
     delete userResponse.password;
 
@@ -146,7 +134,6 @@ router.post('/admin/login', [
   }
 });
 
-// Login for Doctor only
 router.post('/login', [
   body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required'),
@@ -154,7 +141,6 @@ router.post('/login', [
   try {
     const { email, password } = req.body;
 
-    // Find user and include password for comparison (only doctors now)
     const user = await User.findOne({ email, role: 'doctor' }).select('+password');
 
     if (!user) {
@@ -164,7 +150,6 @@ router.post('/login', [
       });
     }
 
-    // Check if doctor is verified
     if (!user.emailVerified) {
       return res.status(401).json({
         success: false,
@@ -172,7 +157,6 @@ router.post('/login', [
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -181,13 +165,10 @@ router.post('/login', [
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
-    // Update last login
     await user.updateLastLogin();
 
-    // Don't include password in response
     const userResponse = user.toObject();
     delete userResponse.password;
 
@@ -209,7 +190,6 @@ router.post('/login', [
   }
 });
 
-// Get current user profile
 router.get('/profile', authenticate, async (req, res) => {
   try {
     const userResponse = req.user.toObject();
@@ -230,7 +210,6 @@ router.get('/profile', authenticate, async (req, res) => {
   }
 });
 
-// Update profile
 router.put('/profile', authenticate, [
   body('name').optional().trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
   body('profile.bio').optional().trim().isLength({ max: 500 }).withMessage('Bio too long'),
@@ -244,10 +223,8 @@ router.put('/profile', authenticate, [
     const updates = req.body;
     const user = req.user;
 
-    // Update basic fields
     if (updates.name) user.name = updates.name;
     
-    // Update profile fields
     if (updates.profile) {
       Object.keys(updates.profile).forEach(key => {
         if (updates.profile[key] !== undefined) {
@@ -278,26 +255,23 @@ router.put('/profile', authenticate, [
   }
 });
 
-// Admin: Get all doctors for verification
 router.get('/admin/doctors', authenticate, adminOnly, async (req, res) => {
   try {
     const {
       page = 1,
       limit = 10,
       search = '',
-      status = 'all' // all, pending, verified, rejected
+      status = 'all'
     } = req.query;
 
     let query = { role: 'doctor' };
 
-    // Apply status filter
     if (status === 'pending') {
       query.emailVerified = false;
     } else if (status === 'verified') {
       query.emailVerified = true;
     }
 
-    // Apply search filter
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -340,13 +314,11 @@ router.get('/admin/doctors', authenticate, adminOnly, async (req, res) => {
   }
 });
 
-// Admin: Verify doctor
 router.put('/admin/doctors/:id/verify', authenticate, adminOnly, async (req, res) => {
   try {
     const { id } = req.params;
     const { reason } = req.body;
 
-    // Validate MongoDB ObjectId
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
@@ -362,16 +334,13 @@ router.put('/admin/doctors/:id/verify', authenticate, adminOnly, async (req, res
       });
     }
 
-    // Update verification status
     doctor.emailVerified = true;
     doctor.profile.isVerifiedDoctor = true;
     
-    // Add verification reason if provided
     if (reason) {
       doctor.profile.verificationReason = reason;
     }
     
-    // Add verification date
     doctor.profile.verificationDate = new Date();
     doctor.profile.verifiedBy = req.user._id;
 
@@ -402,13 +371,11 @@ router.put('/admin/doctors/:id/verify', authenticate, adminOnly, async (req, res
   }
 });
 
-// Admin: Unverify doctor
 router.put('/admin/doctors/:id/unverify', authenticate, adminOnly, async (req, res) => {
   try {
     const { id } = req.params;
     const { reason } = req.body;
 
-    // Validate MongoDB ObjectId
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
@@ -424,16 +391,13 @@ router.put('/admin/doctors/:id/unverify', authenticate, adminOnly, async (req, r
       });
     }
 
-    // Update verification status
     doctor.emailVerified = false;
     doctor.profile.isVerifiedDoctor = false;
     
-    // Add unverification reason if provided
     if (reason) {
       doctor.profile.verificationReason = reason;
     }
     
-    // Add verification date
     doctor.profile.verificationDate = new Date();
     doctor.profile.verifiedBy = req.user._id;
 
@@ -464,12 +428,10 @@ router.put('/admin/doctors/:id/unverify', authenticate, adminOnly, async (req, r
   }
 });
 
-// Admin: Delete doctor
 router.delete('/admin/doctors/:id', authenticate, adminOnly, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate MongoDB ObjectId
     if (!isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
