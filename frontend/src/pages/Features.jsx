@@ -162,14 +162,8 @@ const Features = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-[#1E1E1E] border border-[#333333] rounded-lg p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="w-12 h-12 bg-[#4CAF50] bg-opacity-20 rounded-lg flex items-center justify-center mb-4">
-                    {IconComponent ? (
-                      <IconComponent className="w-6 h-6 text-[#4CAF50]" />
-                    ) : (
-                      <div className="w-6 h-6 bg-[#4CAF50] rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                        {feature.title.charAt(0)}
-                      </div>
-                    )}
+                  <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-[#4CAF50] to-[#45a049] mb-4 shadow-lg shadow-[#4CAF50]/30">
+                    {IconComponent && <IconComponent className="w-7 h-7 md:w-8 md:h-8 text-white" strokeWidth={2} style={{ strokeWidth: 2 }} />}
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-3">
                     {feature.title}
