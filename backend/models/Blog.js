@@ -37,7 +37,6 @@ const blogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: function() {
-      // Only required for admin/doctor created blogs
       return this.author !== 'BlinkFit Team';
     },
   },
@@ -97,7 +96,6 @@ blogSchema.virtual('url').get(function() {
 
 blogSchema.pre('save', function(next) {
   try {
-    // Validate required fields
     if (!this.title || this.title.trim().length === 0) {
       return next(new Error('Title is required'));
     }
@@ -110,29 +108,26 @@ blogSchema.pre('save', function(next) {
       return next(new Error('Content is required'));
     }
 
-    // Sanitize and generate slug if it doesn't exist or if title is modified
     if (!this.slug || this.isModified('title')) {
       this.slug = this.title
         .toLowerCase()
-        .replace(/[^a-zA-Z0-9\s-]/g, '') // Allow hyphens
+        .replace(/[^a-zA-Z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
-        .replace(/-+/g, '-') // Replace multiple hyphens with single
+        .replace(/-+/g, '-')
         .trim()
-        .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+        .replace(/^-+|-+$/g, '');
       
       if (!this.slug || this.slug.length === 0) {
         return next(new Error('Failed to generate valid slug from title'));
       }
     }
 
-    // Sanitize tags array
     if (this.tags && Array.isArray(this.tags)) {
       this.tags = this.tags
         .filter(tag => tag && typeof tag === 'string' && tag.trim().length > 0)
-        .map(tag => tag.trim().substring(0, 50)); // Limit tag length
+        .map(tag => tag.trim().substring(0, 50));
     }
 
-    // Generate meta fields with sanitization
     if (!this.metaTitle) {
       this.metaTitle = this.title.length > 60 ? this.title.substring(0, 57) + '...' : this.title;
     }
@@ -143,7 +138,6 @@ blogSchema.pre('save', function(next) {
         : this.excerpt;
     }
 
-    // Validate views and likes are non-negative
     if (this.views < 0) this.views = 0;
     if (this.likes < 0) this.likes = 0;
 
@@ -160,7 +154,6 @@ blogSchema.methods.incrementViews = async function() {
     return await this.save({ validateBeforeSave: false });
   } catch (error) {
     console.error('❌ Error incrementing blog views:', error.message);
-    // Return current document even if save fails
     return this;
   }
 };
