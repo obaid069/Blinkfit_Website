@@ -75,11 +75,65 @@ contactSchema.virtual('displayName').get(function() {
   return this.name || 'Anonymous User';
 });
 
-contactSchema.methods.markAsReplied = function() {
-  this.replied = true;
-  this.repliedAt = new Date();
-  this.status = 'replied';
-  return this.save();
+// Pre-save hook for sanitization and validation
+contactSchema.pre('save', function(next) {
+  try {
+    // Trim and sanitize text fields
+    if (this.name) {
+      this.name = this.name.trim();
+    }
+    
+    if (this.email) {
+      this.email = this.email.trim().toLowerCase();
+    }
+    
+    if (this.subject) {
+      this.subject = this.subject.trim();
+    }
+    
+    if (this.message) {
+      this.message = this.message.trim();
+    }
+
+    // Sanitize notes if present
+    if (this.notes) {
+      this.notes = this.notes.trim();
+    }
+
+    // Validate required fields
+    if (!this.name || this.name.length === 0) {
+      return next(new Error('Name is required'));
+    }
+
+    if (!this.email || this.email.length === 0) {
+      return next(new Error('Email is required'));
+    }
+
+    if (!this.subject || this.subject.length === 0) {
+      return next(new Error('Subject is required'));
+    }
+
+    if (!this.message || this.message.length === 0) {
+      return next(new Error('Message is required'));
+    }
+
+    next();
+  } catch (error) {
+    console.error('❌ Error in contact pre-save hook:', error.message);
+    next(error);
+  }
+});
+
+contactSchema.methods.markAsReplied = async function() {
+  try {
+    this.replied = true;
+    this.repliedAt = new Date();
+    this.status = 'replied';
+    return await this.save({ validateBeforeSave: false });
+  } catch (error) {
+    console.error('❌ Error marking contact as replied:', error.message);
+    throw error;
+  }
 };
 
 export default mongoose.model('Contact', contactSchema);
