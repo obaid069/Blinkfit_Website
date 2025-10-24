@@ -9,11 +9,9 @@ import cloudinary from '../config/cloudinary.js';
 
 const router = express.Router();
 
-// Configure multer for file uploads (memory storage for Cloudinary)
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
-  // Check if file is an image
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -24,32 +22,61 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 5 * 1024 * 1024
   },
   fileFilter: fileFilter
 });
 
-// Helper function to upload to Cloudinary
 const uploadToCloudinary = (buffer, originalname) => {
   return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: 'blog-images',
-        resource_type: 'image',
-        transformation: [
-          { width: 1200, height: 630, crop: 'fill', quality: 'auto' },
-          { format: 'webp' }
-        ]
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
+    try {
+      if (!buffer || buffer.length === 0) {
+        return reject(new Error('Invalid buffer: Buffer is empty or undefined'));
+      }
+
+      if (!originalname) {
+        return reject(new Error('Original filename is required'));
+      }
+
+      if (!cloudinary.config().cloud_name) {
+        return reject(new Error('Cloudinary is not properly configured'));
+      }
+
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'blog-images',
+          resource_type: 'image',
+          transformation: [
+            { width: 1200, height: 630, crop: 'fill', quality: 'auto' },
+            { format: 'webp' }
+          ],
+          public_id: `blog-${Date.now()}-${originalname.split('.')[0]}`,
+        },
+        (error, result) => {
+          if (error) {
+            console.error('❌ Cloudinary upload error:', error.message);
+            return reject(new Error(`Cloudinary upload failed: ${error.message}`));
+          }
+          
+          if (!result || !result.secure_url) {
+            return reject(new Error('Cloudinary upload succeeded but no URL returned'));
+          }
+          
+          console.log('✅ Image uploaded successfully to Cloudinary');
           resolve(result.secure_url);
         }
-      }
-    );
-    uploadStream.end(buffer);
+      );
+
+      uploadStream.on('error', (streamError) => {
+        console.error('❌ Upload stream error:', streamError.message);
+        reject(new Error(`Upload stream error: ${streamError.message}`));
+      });
+
+      uploadStream.end(buffer);
+    } catch (error) {
+      console.error('❌ Error in uploadToCloudinary:', error.message);
+      reject(new Error(`Failed to initiate upload: ${error.message}`));
+    }
   });
 };
 
@@ -184,9 +211,6 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// ============= ADMIN & DOCTOR BLOG MANAGEMENT ROUTES =============
-
-// Admin Analytics
 router.get('/admin/analytics', authenticate, adminOnly, async (req, res) => {
   try {
     const totalBlogs = await Blog.countDocuments();
@@ -241,7 +265,6 @@ router.get('/admin/analytics', authenticate, adminOnly, async (req, res) => {
   }
 });
 
-// Admin: Create new blog (with file upload support)
 router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredImage'), [
   body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
   body('excerpt').trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
@@ -261,22 +284,18 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
     const { title, excerpt, content, category, readTime, published, metaTitle, metaDescription } = req.body;
     let { tags } = req.body;
 
-    // Normalize types in case of multipart/form-data strings
     const normalizedPublished = (published === true || published === 'true' || published === 1 || published === '1');
     const normalizedReadTime = Number.isInteger(readTime) ? readTime : (parseInt(readTime, 10) || undefined);
     const user = req.user;
 
-    // Handle tags - convert string to array if needed
     if (typeof tags === 'string') {
       tags = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
     } else if (!Array.isArray(tags)) {
       tags = [];
     }
 
-    // Handle featured image
     let featuredImage = null;
     if (req.file) {
-      // File uploaded - upload to Cloudinary
       try {
         featuredImage = await uploadToCloudinary(req.file.buffer, req.file.originalname);
         console.log('Image uploaded to Cloudinary:', featuredImage);
@@ -289,11 +308,9 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
         });
       }
     } else if (req.body.featuredImage) {
-      // URL provided
       featuredImage = req.body.featuredImage;
     }
 
-    // Create new blog with author information
     const blog = new Blog({
       title,
       excerpt,
@@ -332,7 +349,6 @@ router.post('/admin/manage', authenticate, adminOnly, upload.single('featuredIma
   }
 });
 
-// Create new blog (Admin or Doctor)
 router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage'), [
   body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
   body('excerpt').trim().isLength({ min: 10, max: 300 }).withMessage('Excerpt must be between 10 and 300 characters'),
@@ -354,21 +370,17 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
     let { tags } = req.body;
     const user = req.user;
 
-    // Normalize types in case of multipart/form-data strings
     const normalizedPublished = (published === true || published === 'true' || published === 1 || published === '1');
     const normalizedReadTime = Number.isInteger(readTime) ? readTime : (parseInt(readTime, 10) || undefined);
 
-    // Handle tags - convert string to array if needed
     if (typeof tags === 'string') {
       tags = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
     } else if (!Array.isArray(tags)) {
       tags = [];
     }
 
-    // Handle featured image
     let featuredImage = null;
     if (req.file) {
-      // File uploaded - upload to Cloudinary
       try {
         featuredImage = await uploadToCloudinary(req.file.buffer, req.file.originalname);
         console.log('Image uploaded to Cloudinary:', featuredImage);
@@ -381,11 +393,9 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
         });
       }
     } else if (req.body.featuredImage) {
-      // URL provided
       featuredImage = req.body.featuredImage;
     }
 
-    // Create new blog with author information
     const blog = new Blog({
       title,
       excerpt,
@@ -395,7 +405,7 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
       category,
       tags,
       featuredImage: featuredImage || '/api/placeholder/600/400',
-      readTime: normalizedReadTime || Math.ceil(content.split(' ').length / 200), // Estimate based on word count
+      readTime: normalizedReadTime || Math.ceil(content.split(' ').length / 200),
       published: published !== undefined ? normalizedPublished : true,
       metaTitle: metaTitle || title,
       metaDescription: metaDescription || excerpt,
@@ -424,7 +434,6 @@ router.post('/manage', authenticate, adminOrDoctor, upload.single('featuredImage
   }
 });
 
-// Admin: Get all blogs for management
 router.get('/admin/manage', authenticate, adminOnly, [
   query('page').optional().isInt({ min: 1 }).toInt(),
   query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
@@ -445,7 +454,6 @@ router.get('/admin/manage', authenticate, adminOnly, [
 
     const query = {};
 
-    // Apply filters
     if (category) {
       query.category = category;
     }

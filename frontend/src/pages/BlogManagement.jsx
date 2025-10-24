@@ -117,6 +117,7 @@ const BlogManagement = () => {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [error, setError] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(editBlog?.featuredImage ?? null);
@@ -134,7 +135,13 @@ const BlogManagement = () => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox'
+        ? !!checked
+        : (type === 'number'
+            ? (value === ''
+                ? ''
+                : (/^-?\d+$/.test(value) ? parseInt(value, 10) : (prev[name] ?? '')))
+            : (value ?? ''))
     }));
     
     // Clear error when user starts typing
@@ -290,7 +297,8 @@ const BlogManagement = () => {
       navigate(dashboardPath, { state: { activeTab: 'blogs' } });
     } catch (error) {
       console.error('Error saving blog:', error);
-      alert(error.response?.data?.message || 'Error saving blog. Please try again.');
+      console.error('Server response:', error.response?.status, error.response?.data);
+      alert(error.response?.data?.message || error.response?.data?.error || 'Error saving blog. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -440,7 +448,7 @@ const BlogManagement = () => {
                     type="text"
                     id="title"
                     name="title"
-                    value={formData.title}
+                    value={formData.title ?? ''}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                     placeholder="Enter an engaging blog title..."
@@ -452,7 +460,7 @@ const BlogManagement = () => {
                       {errors.title}
                     </p>
                   )}
-                  <p className="text-gray-500 text-sm mt-1">{formData.title.length}/200 characters</p>
+                  <p className="text-gray-500 text-sm mt-1">{(formData.title ?? '').length}/200 characters</p>
                 </div>
 
                 {/* Excerpt */}
@@ -463,7 +471,7 @@ const BlogManagement = () => {
                   <textarea
                     id="excerpt"
                     name="excerpt"
-                    value={formData.excerpt}
+                    value={formData.excerpt ?? ''}
                     onChange={handleInputChange}
                     rows={3}
                     className="w-full px-4 py-3 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-none"
@@ -476,7 +484,7 @@ const BlogManagement = () => {
                       {errors.excerpt}
                     </p>
                   )}
-                  <p className="text-gray-500 text-sm mt-1">{formData.excerpt.length}/300 characters</p>
+                  <p className="text-gray-500 text-sm mt-1">{(formData.excerpt ?? '').length}/300 characters</p>
                 </div>
 
                 {/* Content */}
@@ -487,7 +495,7 @@ const BlogManagement = () => {
                   <textarea
                     id="content"
                     name="content"
-                    value={formData.content}
+                    value={formData.content ?? ''}
                     onChange={handleInputChange}
                     rows={20}
                     className="w-full px-4 py-3 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-y"
@@ -499,7 +507,7 @@ const BlogManagement = () => {
                       {errors.content}
                     </p>
                   )}
-                  <p className="text-gray-500 text-sm mt-1">{formData.content.length} characters</p>
+                  <p className="text-gray-500 text-sm mt-1">{(formData.content ?? '').length} characters</p>
                 </div>
               </div>
 
@@ -519,7 +527,7 @@ const BlogManagement = () => {
                           type="checkbox"
                           id="published"
                           name="published"
-                          checked={formData.published}
+                          checked={!!formData.published}
                           onChange={handleInputChange}
                           className="w-4 h-4 text-blue-600 bg-[#333333] border-[#444444] rounded focus:ring-blue-500"
                         />
@@ -534,7 +542,7 @@ const BlogManagement = () => {
                       <select
                         id="category"
                         name="category"
-                        value={formData.category}
+                        value={formData.category ?? 'Eye Health'}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 bg-[#333333] border border-[#444444] rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                       >
@@ -555,7 +563,7 @@ const BlogManagement = () => {
                         type="number"
                         id="readTime"
                         name="readTime"
-                        value={formData.readTime}
+                        value={formData.readTime ?? 5}
                         onChange={handleInputChange}
                         min={1}
                         max={60}
@@ -584,7 +592,7 @@ const BlogManagement = () => {
                         type="text"
                         id="tags"
                         name="tags"
-                        value={formData.tags}
+                        value={formData.tags ?? ''}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                         placeholder="eye health, tips, wellness"
@@ -599,13 +607,13 @@ const BlogManagement = () => {
                         type="text"
                         id="metaTitle"
                         name="metaTitle"
-                        value={formData.metaTitle}
+                        value={formData.metaTitle ?? ''}
                         onChange={handleInputChange}
                         maxLength={60}
                         className="w-full px-3 py-2 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                         placeholder="SEO optimized title..."
                       />
-                      <p className="text-gray-500 text-sm mt-1">{formData.metaTitle.length}/60 characters</p>
+                      <p className="text-gray-500 text-sm mt-1">{(formData.metaTitle ?? '').length}/60 characters</p>
                     </div>
 
                     <div>
@@ -615,14 +623,14 @@ const BlogManagement = () => {
                       <textarea
                         id="metaDescription"
                         name="metaDescription"
-                        value={formData.metaDescription}
+                        value={formData.metaDescription ?? ''}
                         onChange={handleInputChange}
                         rows={3}
                         maxLength={160}
                         className="w-full px-3 py-2 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-none"
                         placeholder="SEO description for search engines..."
                       />
-                      <p className="text-gray-500 text-sm mt-1">{formData.metaDescription.length}/160 characters</p>
+                      <p className="text-gray-500 text-sm mt-1">{(formData.metaDescription ?? '').length}/160 characters</p>
                     </div>
                   </div>
                 </div>
@@ -673,7 +681,7 @@ const BlogManagement = () => {
                             type="url"
                             id="featuredImage"
                             name="featuredImage"
-                            value={formData.featuredImage}
+                            value={formData.featuredImage ?? ''}
                             onChange={handleImageUrlChange}
                             className="w-full px-3 py-2 bg-[#333333] border border-[#444444] rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                             placeholder="https://example.com/image.jpg"

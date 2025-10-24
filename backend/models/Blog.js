@@ -37,7 +37,6 @@ const blogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: function() {
-      // Only required for admin/doctor created blogs
       return this.author !== 'BlinkFit Team';
     },
   },
@@ -96,26 +95,67 @@ blogSchema.virtual('url').get(function() {
 });
 
 blogSchema.pre('save', function(next) {
-  // Generate slug if it doesn't exist or if title is modified
-  if (!this.slug || this.isModified('title')) {
-    this.slug = this.title
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]/g, '')
-      .replace(/\s+/g, '-')
-      .trim();
+  try {
+    if (!this.title || this.title.trim().length === 0) {
+      return next(new Error('Title is required'));
+    }
+
+    if (!this.excerpt || this.excerpt.trim().length === 0) {
+      return next(new Error('Excerpt is required'));
+    }
+
+    if (!this.content || this.content.trim().length === 0) {
+      return next(new Error('Content is required'));
+    }
+
+    if (!this.slug || this.isModified('title')) {
+      this.slug = this.title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim()
+        .replace(/^-+|-+$/g, '');
+      
+      if (!this.slug || this.slug.length === 0) {
+        return next(new Error('Failed to generate valid slug from title'));
+      }
+    }
+
+    if (this.tags && Array.isArray(this.tags)) {
+      this.tags = this.tags
+        .filter(tag => tag && typeof tag === 'string' && tag.trim().length > 0)
+        .map(tag => tag.trim().substring(0, 50));
+    }
+
+    if (!this.metaTitle) {
+      this.metaTitle = this.title.length > 60 ? this.title.substring(0, 57) + '...' : this.title;
+    }
+    
+    if (!this.metaDescription) {
+      this.metaDescription = this.excerpt && this.excerpt.length > 160 
+        ? this.excerpt.substring(0, 157) + '...' 
+        : this.excerpt;
+    }
+
+    if (this.views < 0) this.views = 0;
+    if (this.likes < 0) this.likes = 0;
+
+    next();
+  } catch (error) {
+    console.error('❌ Error in blog pre-save hook:', error.message);
+    next(error);
   }
-  if (!this.metaTitle) {
-    this.metaTitle = this.title.length > 60 ? this.title.substring(0, 57) + '...' : this.title;
-  }
-  if (!this.metaDescription) {
-    this.metaDescription = this.excerpt && this.excerpt.length > 160 ? this.excerpt.substring(0, 157) + '...' : this.excerpt;
-  }
-  next();
 });
 
-blogSchema.methods.incrementViews = function() {
-  this.views += 1;
-  return this.save();
+blogSchema.methods.incrementViews = async function() {
+  try {
+    this.views = (this.views || 0) + 1;
+    return await this.save({ validateBeforeSave: false });
+  } catch (error) {
+    console.error('❌ Error incrementing blog views:', error.message);
+    return this;
+  }
 };
 
 export default mongoose.model('Blog', blogSchema);
