@@ -1,11 +1,7 @@
 import axios from 'axios';
 
 const runtimeOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-// Prefer same-origin on Vercel to avoid CORS; otherwise use VITE_API_URL if provided, then fallback to same-origin or stable backend URL.
-const apiBaseURL =
-  (runtimeOrigin.includes('vercel.app') && runtimeOrigin ? `${runtimeOrigin}/api` : null) ||
-  import.meta.env.VITE_API_URL ||
-  (runtimeOrigin ? `${runtimeOrigin}/api` : 'https://blinkfit-website-u64t.vercel.app/api');
+const apiBaseURL = import.meta.env.VITE_API_URL || (runtimeOrigin ? `${runtimeOrigin}/api` : '/api');
 
 const api = axios.create({
   baseURL: apiBaseURL,
