@@ -78,62 +78,6 @@ router.post('/register/doctor', [
   }
 });
 
-router.post('/admin/login', [
-  body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
-  body('password').notEmpty().withMessage('Password is required'),
-], handleValidationErrors, async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email, role: 'admin' }).select('+password');
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid admin credentials',
-      });
-    }
-
-    if (!user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Admin account is deactivated',
-      });
-    }
-
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid admin credentials',
-      });
-    }
-
-    const token = generateToken(user._id);
-
-    await user.updateLastLogin();
-
-    const userResponse = user.toObject();
-    delete userResponse.password;
-
-    res.json({
-      success: true,
-      message: 'Admin login successful',
-      data: {
-        admin: userResponse,
-        token,
-      },
-    });
-  } catch (error) {
-    console.error('Admin login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error during admin login',
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
-    });
-  }
-});
-
 router.post('/login', [
   body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required'),
@@ -141,8 +85,15 @@ router.post('/login', [
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email, role: 'doctor' }).select('+password');
+    // First, try to find admin
+    let user = await User.findOne({ email, role: 'admin' }).select('+password');
+    
+    // If not admin, try to find doctor
+    if (!user) {
+      user = await User.findOne({ email, role: 'doctor' }).select('+password');
+    }
 
+    // If neither admin nor doctor found
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -150,13 +101,23 @@ router.post('/login', [
       });
     }
 
-    if (!user.emailVerified) {
+    // Check if account is active
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account is deactivated',
+      });
+    }
+
+    // For doctors, check email verification
+    if (user.role === 'doctor' && !user.emailVerified) {
       return res.status(401).json({
         success: false,
         message: 'Your account is pending verification',
       });
     }
 
+    // Verify password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -165,8 +126,10 @@ router.post('/login', [
       });
     }
 
+    // Generate token
     const token = generateToken(user._id);
 
+    // Update last login
     await user.updateLastLogin();
 
     const userResponse = user.toObject();
@@ -174,10 +137,11 @@ router.post('/login', [
 
     res.json({
       success: true,
-      message: 'Login successful',
+      message: `${user.role === 'admin' ? 'Admin' : 'Doctor'} login successful`,
       data: {
         user: userResponse,
         token,
+        dashboardType: user.role, // 'admin' or 'doctor'
       },
     });
   } catch (error) {
