@@ -45,7 +45,6 @@ const Footer = () => {
       { name: 'Bug Report', href: '/contact' },
       { name: 'Feature Request', href: '/contact' },
       { name: 'Doctor Login', href: '/doctor/login' },
-      { name: 'Admin Login', href: '/admin/login' },
     ],
   };
 
