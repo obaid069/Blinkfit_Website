@@ -7,6 +7,16 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/api': {
@@ -15,16 +25,13 @@ export default defineConfig({
         secure: false,
       },
     },
-    // Allow unsafe-eval for development (needed for React DevTools and HMR)
     headers: {
       'Content-Security-Policy': "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none';"
     }
   },
-  // Ensure dev build allows eval for React DevTools
   define: {
     global: 'globalThis',
   },
-  // Optimize dependencies that might use eval
   optimizeDeps: {
     include: ['react', 'react-dom']
   }
