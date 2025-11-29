@@ -20,6 +20,8 @@ const DoctorLogin = () => {
       const user = getCurrentUser();
       if (user?.role === 'doctor') {
         navigate('/doctor/dashboard');
+      } else if (user?.role === 'admin') {
+        navigate('/admin/dashboard');
       }
     }
   }, [navigate]);
@@ -86,22 +88,22 @@ const DoctorLogin = () => {
 
     try {
       const response = await login(formData.email, formData.password);
-      
+
       if (response.success) {
         const user = response.data.user;
-        
-        // Check if user is a doctor
-        if (user.role !== 'doctor') {
-          setError('This login page is for doctors only.');
-          setIsLoading(false);
-          return;
-        }
+        const dashboardType = response.data.dashboardType;
 
         setSuccess('Login successful! Redirecting...');
-        
-        // Redirect to doctor dashboard
+
+        // Redirect based on user role
         setTimeout(() => {
-          navigate('/doctor/dashboard');
+          if (dashboardType === 'admin' || user.role === 'admin') {
+            navigate('/admin/dashboard');
+          } else if (dashboardType === 'doctor' || user.role === 'doctor') {
+            navigate('/doctor/dashboard');
+          } else {
+            setError('Invalid user role');
+          }
         }, 1000);
       }
     } catch (error) {
@@ -135,10 +137,10 @@ const DoctorLogin = () => {
             </div>
           </Link>
           <h2 className="mt-6 text-2xl font-bold text-white">
-            Doctor Login
+            Login
           </h2>
           <p className="mt-2 text-sm text-gray-400">
-            Sign in to manage your blog content
+            Sign in to access your dashboard
           </p>
         </div>
 
@@ -245,7 +247,7 @@ const DoctorLogin = () => {
                   Signing in...
                 </div>
               ) : (
-                'Sign in as Doctor'
+                'Sign in'
               )}
             </button>
           </div>
