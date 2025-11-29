@@ -46,12 +46,11 @@ app.use((req, res, next) => {
 });
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://blinkfit-official.vercel.app',
-  'https://blinkfit-website-u64r.vercel.app',
-  'https://www.blinkfit.site',
-  'https://blinkfit.site',
   process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_WWW,
+  process.env.FRONTEND_URL_VERCEL,
+  process.env.FRONTEND_URL_VERCEL_BACKEND,
+  'http://localhost:5173', // Local development only
 ].filter(Boolean);
 
 app.use(cors({
