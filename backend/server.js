@@ -48,6 +48,7 @@ app.use((req, res, next) => {
 const allowedOrigins = [
   'http://localhost:5173',
   'https://blinkfit-official.vercel.app',
+  'https://blinkfit-website-u64r.vercel.app',
   'https://www.blinkfit.site',
   'https://blinkfit.site',
   process.env.FRONTEND_URL,
