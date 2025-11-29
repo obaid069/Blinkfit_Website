@@ -151,7 +151,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/doctor/login');
   };
 
   const handleVerifyDoctor = async (doctorId) => {
