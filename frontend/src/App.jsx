@@ -15,7 +15,6 @@ import DoctorLogin from './pages/DoctorLogin'
 import DoctorSignup from './pages/DoctorSignup'
 import DoctorDashboard from './pages/DoctorDashboard'
 import BlogPreview from './pages/BlogPreview'
-import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import BlogManagement from './pages/BlogManagement'
 import BlogDetail from './pages/BlogDetail'
@@ -100,8 +99,7 @@ function AppContent() {
           {/* Authentication Routes */}
           <Route path="/doctor/login" element={<DoctorLogin />} />
           <Route path="/doctor/signup" element={<DoctorSignup />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          
+
           {/* Legacy route for backward compatibility */}
           <Route path="/doctor/register" element={<DoctorSignup />} />
           
