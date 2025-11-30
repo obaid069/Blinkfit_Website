@@ -28,9 +28,7 @@ const BlogManagement = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
-  const blogId = params.id; // Blog ID from URL params
-  
-  // State for blog being edited
+  const blogId = params.id; 
   const [editBlog, setEditBlog] = useState(location.state?.blog || null);
   const [blogLoading, setBlogLoading] = useState(false);
   
