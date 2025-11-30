@@ -26,8 +26,7 @@ const BlogDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const blog = location.state?.blog;
-  
-  // Authentication check
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/admin/login');
