@@ -164,7 +164,8 @@ const BlogDetail = () => {
                     alt={blog.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.parentElement.style.display = 'none';
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop';
                     }}
                   />
                 </div>
