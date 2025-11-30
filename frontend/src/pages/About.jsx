@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 import { motion } from 'framer-motion';
-// Build trigger - fixing URLs hhhihi
 import {
   Eye,
   Heart,
@@ -136,8 +135,11 @@ const About = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="text-center"
                 >
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#4CAF50] bg-opacity-20 rounded-full mb-4">
-                    {IconComponent && <IconComponent className="w-8 h-8 text-[#4CAF50]" strokeWidth={2} style={{ strokeWidth: 2 }} />}
+                  <div
+                    className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
+                    style={{ backgroundColor: '#49a74f' }}
+                  >
+                    {IconComponent && <IconComponent className="w-8 h-8 text-white" strokeWidth={2} style={{ strokeWidth: 2 }} />}
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-white mb-2">
                     {stat.value}
@@ -238,8 +240,11 @@ const About = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="text-center"
                 >
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#4CAF50] bg-opacity-20 rounded-full mb-6">
-                    {IconComponent && <IconComponent className="w-8 h-8 text-[#4CAF50]" strokeWidth={2} style={{ strokeWidth: 2 }} />}
+                  <div
+                    className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6"
+                    style={{ backgroundColor: '#49a74f' }}
+                  >
+                    {IconComponent && <IconComponent className="w-8 h-8 text-white" strokeWidth={2} style={{ strokeWidth: 2 }} />}
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-4">
                     {value.title}
