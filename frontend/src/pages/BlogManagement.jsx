@@ -88,7 +88,7 @@ const BlogManagement = () => {
         });
         
         // Set image preview
-        if (blog.featuredImage && blog.featuredImage !== '/api/placeholder/600/400') {
+        if (blog.featuredImage && !blog.featuredImage.includes('unsplash.com') && !blog.featuredImage.includes('placeholder')) {
           setImagePreview(blog.featuredImage);
         }
       }
