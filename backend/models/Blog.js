@@ -52,7 +52,7 @@ const blogSchema = new mongoose.Schema({
   }],
   featuredImage: {
     type: String,
-    default: '/api/placeholder/600/400',
+    default: 'https://media.istockphoto.com/id/489756064/photo/green-blue-and-purple-iris.jpg?s=2048x2048&w=is&k=20&c=kQWa_NVOjcwvBptnL562PkEJIRZeJ9C3xH_K5O9XAi8=',
   },
   readTime: {
     type: Number,
