@@ -419,4 +419,6 @@ const BlogPost = () => {
   );
 };
 
+//blog past
+
 export default BlogPost;
