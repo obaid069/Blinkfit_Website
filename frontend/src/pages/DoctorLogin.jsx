@@ -15,7 +15,6 @@ const DoctorLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect if already authenticated
     if (isAuthenticated()) {
       const user = getCurrentUser();
       if (user?.role === 'doctor') {
