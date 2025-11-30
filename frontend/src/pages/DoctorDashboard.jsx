@@ -24,8 +24,6 @@ const DoctorDashboard = () => {
       navigate('/doctor/login');
       return;
     }
-
-    // Check if doctor is verified
     if (!user?.emailVerified) {
       setError('Your account is pending verification. Please wait for approval.');
       return;
