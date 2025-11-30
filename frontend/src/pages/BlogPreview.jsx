@@ -141,14 +141,15 @@ const BlogPreview = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <article className="bg-gray-900 rounded-lg overflow-hidden">
           {/* Featured Image */}
-          {blog.featuredImage && blog.featuredImage !== '/api/placeholder/600/400' && (
+          {blog.featuredImage && (
             <div className="aspect-video w-full">
               <img
                 src={blog.featuredImage}
                 alt={blog.title}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.target.style.display = 'none';
+                  e.target.onerror = null;
+                  e.target.src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop';
                 }}
               />
             </div>
@@ -239,14 +240,15 @@ const BlogPreview = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedBlogs.map((relatedBlog) => (
                 <div key={relatedBlog._id} className="bg-gray-900 rounded-lg overflow-hidden hover:bg-gray-800 transition-colors">
-                  {relatedBlog.featuredImage && relatedBlog.featuredImage !== '/api/placeholder/600/400' && (
+                  {relatedBlog.featuredImage && (
                     <div className="aspect-video w-full">
                       <img
                         src={relatedBlog.featuredImage}
                         alt={relatedBlog.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.style.display = 'none';
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop';
                         }}
                       />
                     </div>
