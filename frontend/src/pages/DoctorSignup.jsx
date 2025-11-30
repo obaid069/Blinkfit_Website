@@ -358,7 +358,7 @@ const DoctorSignup = () => {
                   onChange={handleChange}
                 />
               </div>
-
+                
               <div>
                 <label htmlFor="licenseNumber" className="block text-sm font-medium text-gray-300 mb-1">
                   Medical License Number *
@@ -425,7 +425,6 @@ const DoctorSignup = () => {
             </div>
           )}
 
-          {/* Success Message */}
           {success && (
             <div className="rounded-md bg-green-900/50 border border-green-700 p-4">
               <div className="flex">
