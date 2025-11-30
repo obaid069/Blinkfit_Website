@@ -156,14 +156,15 @@ const Contact = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {contactTypes.map((type) => {
                         const IconComponent = type.icon;
+                        const isSelected = watchedType === type.value;
                         return (
                           <label
                             key={type.value}
                             className={`relative flex items-center p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
-                              watchedType === type.value
-                                ? 'border-[#4CAF50] bg-[#4CAF50] bg-opacity-20'
+                              isSelected
+                                ? 'border-transparent text-white'
                                 : 'border-[#333333] hover:border-[#4CAF50]'
-                            }`}
+                            } ${isSelected ? 'bg-[#49a74f]' : ''}`}
                           >
                             <input
                               type="radio"
@@ -171,7 +172,7 @@ const Contact = () => {
                               {...register('type', { required: 'Please select a contact type' })}
                               className="sr-only"
                             />
-                            <IconComponent className="w-5 h-5 text-[#B3B3B3] mr-2" />
+                            <IconComponent className={`w-5 h-5 mr-2 ${isSelected ? 'text-white' : 'text-[#B3B3B3]'}`} />
                             <span className="text-sm font-medium text-white">
                               {type.label}
                             </span>
@@ -327,11 +328,14 @@ const Contact = () => {
                           transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
                           className="flex items-start"
                         >
-                          <div className="w-10 h-10 bg-[#4CAF50] bg-opacity-20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                          <div
+                            className="w-10 h-10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0"
+                            style={{ backgroundColor: '#49a74f' }}
+                          >
                             {IconComponent ? (
-                              <IconComponent className="w-5 h-5 text-[#4CAF50]" />
+                              <IconComponent className="w-5 h-5 text-white" />
                             ) : (
-                              <div className="w-5 h-5 bg-[#4CAF50] rounded-full flex items-center justify-center text-white font-bold text-xs">
+                              <div className="w-5 h-5 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ backgroundColor: '#2f6f34' }}>
                                 {item.title.charAt(0)}
                               </div>
                             )}
