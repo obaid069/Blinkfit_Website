@@ -233,6 +233,10 @@ const Blog = () => {
                       <img 
                         src={blog.featuredImage} 
                         alt={blog.title}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop';
+                        }}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-4 left-4">
