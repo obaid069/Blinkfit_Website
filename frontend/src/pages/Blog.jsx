@@ -227,7 +227,7 @@ const Blog = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="bg-[#1E1E1E] border border-[#333333] rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 group"
+                    className="bg-[#1E1E1E] border border-[#333333] rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 group flex flex-col h-full"
                   >
                     <div className="relative">
                       <img 
@@ -246,7 +246,7 @@ const Blog = () => {
                       </div>
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col h-full">
                       <div className="flex items-center text-sm text-[#B3B3B3] mb-3">
                         <Calendar className="w-4 h-4 mr-1" />
                         <span className="mr-4">{formatDate(blog.publishedAt)}</span>
@@ -260,11 +260,11 @@ const Blog = () => {
                         {blog.title}
                       </h3>
 
-                      <p className="text-[#B3B3B3] mb-4 line-clamp-3">
+                      <p className="text-[#B3B3B3] mb-4 line-clamp-3 min-h-[60px]">
                         {blog.excerpt}
                       </p>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mt-auto pt-2">
                         <div className="flex items-center text-sm text-[#B3B3B3]">
                           <User className="w-4 h-4 mr-1" />
                           <span>{blog.author}</span>
