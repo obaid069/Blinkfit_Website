@@ -12,7 +12,6 @@ const BlogPreview = () => {
   const currentUser = getCurrentUser();
 
   useEffect(() => {
-    // Check authentication
     if (!isAuthenticated() || currentUser?.role !== 'doctor') {
       navigate('/doctor/login');
       return;
