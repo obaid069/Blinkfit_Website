@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getBlogs } from '../utils/api';
+import { getBlogs, getBlogCategories } from '../utils/api';
 import { motion } from 'framer-motion';
 import { 
   Eye, 
@@ -25,6 +25,12 @@ const EyeHealthInsights = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([{
+    id: 'all',
+    name: 'All Articles',
+    icon: BookOpen,
+    count: 0,
+  }]);
 
   const sampleArticles = [
     {
@@ -107,16 +113,6 @@ const EyeHealthInsights = () => {
     }
   ];
 
-  const categories = [
-    { id: 'all', name: 'All Articles', icon: BookOpen, count: sampleArticles.length },
-    { id: 'Digital Health', name: 'Digital Health', icon: Eye, count: 1 },
-    { id: 'Prevention', name: 'Prevention', icon: Shield, count: 1 },
-    { id: 'Research', name: 'Research', icon: Target, count: 1 },
-    { id: 'Nutrition', name: 'Nutrition', icon: Heart, count: 1 },
-    { id: 'Exercises', name: 'Exercises', icon: Zap, count: 1 },
-    { id: 'Ergonomics', name: 'Ergonomics', icon: Lightbulb, count: 1 }
-  ];
-
   const tips = [
     {
       title: "Take Regular Breaks",
@@ -194,6 +190,48 @@ const EyeHealthInsights = () => {
   }, []);
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getBlogCategories();
+        const rawCategories = response?.data?.data || response?.data || response || [];
+
+        const iconMap = {
+          'Eye Health': Eye,
+          'Digital Health': Eye,
+          'Prevention': Shield,
+          'Research': Target,
+          'Nutrition': Heart,
+          'Exercises': Zap,
+          'Ergonomics': Lightbulb,
+          'Technology': Lightbulb,
+          'Lifestyle': Heart,
+          'Tips & Tricks': Zap,
+          'App Features': Target,
+        };
+
+        const dynamicCategories = (rawCategories || []).map((cat) => ({
+          id: cat.name || cat.category,
+          name: cat.name || cat.category,
+          count: cat.count || cat.total || 0,
+          icon: iconMap[cat.name || cat.category] || BookOpen,
+        })).filter((cat) => cat.id);
+
+        const totalCount = dynamicCategories.reduce((sum, cat) => sum + (cat.count || 0), 0) || articles.length;
+
+        setCategories([
+          { id: 'all', name: 'All Articles', icon: BookOpen, count: totalCount },
+          ...dynamicCategories,
+        ]);
+      } catch (error) {
+        console.error('Failed to load blog categories:', error);
+        setCategories((prev) => prev);
+      }
+    };
+
+    fetchCategories();
+  }, [articles.length]);
+
+  useEffect(() => {
     let filtered = articles;
 
     if (selectedCategory !== 'all') {
@@ -212,6 +250,7 @@ const EyeHealthInsights = () => {
   }, [articles, selectedCategory, searchTerm]);
 
   const featuredArticles = articles.filter(article => article.featured);
+  const visibleArticles = filteredArticles.slice(0, 4);
 
   return (
     <div className="pt-16 bg-[#121212] min-h-screen">
@@ -271,8 +310,11 @@ const EyeHealthInsights = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-[#121212] border border-[#333333] rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="bg-[#4CAF50] bg-opacity-20 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                    {IconComponent && <IconComponent className="w-6 h-6 text-[#4CAF50]" />}
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center mb-4"
+                    style={{ backgroundColor: '#49a74f' }}
+                  >
+                    {IconComponent && <IconComponent className="w-6 h-6 text-white" />}
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">{tip.title}</h3>
                   <p className="text-[#B3B3B3] text-sm">{tip.description}</p>
@@ -425,7 +467,7 @@ const EyeHealthInsights = () => {
                 </div>
               ) : filteredArticles.length > 0 ? (
                 <div className="space-y-6">
-                  {filteredArticles.map((article, index) => (
+                  {visibleArticles.map((article, index) => (
                     <motion.article
                       key={article.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -444,7 +486,10 @@ const EyeHealthInsights = () => {
 
                         <div className="md:w-2/3">
                           <div className="flex items-center text-sm text-[#B3B3B3] mb-3">
-                            <span className="bg-[#4CAF50] bg-opacity-20 text-[#4CAF50] px-2 py-1 rounded text-xs font-medium mr-3">
+                            <span
+                              className="px-2 py-1 rounded text-xs font-medium mr-3 text-white"
+                              style={{ backgroundColor: '#49a74f' }}
+                            >
                               {article.category}
                             </span>
                             <User className="w-4 h-4 mr-1" />
@@ -487,6 +532,17 @@ const EyeHealthInsights = () => {
                       </div>
                     </motion.article>
                   ))}
+                  {filteredArticles.length > visibleArticles.length && (
+                    <div className="pt-6 flex justify-center">
+                      <Link
+                        to="/blog"
+                        className="inline-flex items-center px-6 py-3 bg-[#4CAF50] text-white rounded-lg font-semibold hover:bg-[#3d8c40] transition-colors duration-200"
+                      >
+                        See More Articles
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-12">
