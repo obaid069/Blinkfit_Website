@@ -255,8 +255,11 @@ const Features = () => {
                         transition={{ duration: 0.4, delay: index * 0.1 }}
                         className="flex items-start"
                       >
-                        <div className="w-10 h-10 bg-[#4CAF50] bg-opacity-20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                          <IconComponent className="w-5 h-5 text-[#4CAF50]" />
+                        <div
+                          className="w-10 h-10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0"
+                          style={{ backgroundColor: '#49a74f' }}
+                        >
+                          <IconComponent className="w-5 h-5 text-white" />
                         </div>
                         <div>
                           <h4 className="font-semibold text-white mb-1">
