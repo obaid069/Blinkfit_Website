@@ -39,8 +39,11 @@ const IconTest = () => {
           const IconComponent = item.icon;
           return (
             <div key={item.name} className="text-center">
-              <div className="w-16 h-16 bg-[#4CAF50] bg-opacity-20 rounded-full flex items-center justify-center mb-4 mx-auto">
-                <IconComponent className="w-8 h-8 text-[#4CAF50]" />
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto"
+                style={{ backgroundColor: '#49a74f' }}
+              >
+                <IconComponent className="w-8 h-8 text-white" />
               </div>
               <p className="text-white text-sm">{item.name}</p>
             </div>
