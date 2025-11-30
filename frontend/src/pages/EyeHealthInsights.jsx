@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getBlogs } from '../utils/api';
 import { motion } from 'framer-motion';
 import { 
   Eye, 
@@ -140,12 +141,56 @@ const EyeHealthInsights = () => {
   ];
 
   useEffect(() => {
+    const fetchArticles = async () => {
+      setLoading(true);
+      try {
+        const res = await getBlogs({ limit: 20, page: 1, sort: 'latest' });
 
-    setTimeout(() => {
-      setArticles(sampleArticles);
-      setFilteredArticles(sampleArticles);
-      setLoading(false);
-    }, 1000);
+        // Normalize different response shapes
+        let blogsData = [];
+        if (Array.isArray(res)) {
+          blogsData = res;
+        } else if (res?.data?.blogs) {
+          blogsData = res.data.blogs;
+        } else if (res?.blogs) {
+          blogsData = res.blogs;
+        } else if (res?.data) {
+          blogsData = res.data;
+        }
+
+        // Map server blog shape to UI shape expected in this page
+        const mapped = (blogsData || []).map((b) => ({
+          id: b._id || b.id || b.slug,
+          title: b.title,
+          excerpt: b.excerpt || b.metaDescription || '',
+          content: b.content || '',
+          category: b.category || 'General',
+          author: b.author || 'BlinkFit Team',
+          publishedAt: b.publishedAt || b.createdAt || new Date().toISOString(),
+          readTime: b.readTime ? `${b.readTime} min read` : `${Math.max(1, Math.ceil((b.content || '').split(' ').length / 200))} min read`,
+          image: b.featuredImage || b.image || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop',
+          tags: b.tags || [],
+          featured: !!b.featured,
+        }));
+
+        if (mapped.length > 0) {
+          setArticles(mapped);
+          setFilteredArticles(mapped);
+        } else {
+          // fallback to sample articles if API returns nothing
+          setArticles(sampleArticles);
+          setFilteredArticles(sampleArticles);
+        }
+      } catch (error) {
+        console.error('Failed to load blog insights:', error);
+        setArticles(sampleArticles);
+        setFilteredArticles(sampleArticles);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
   }, []);
 
   useEffect(() => {
@@ -217,7 +262,7 @@ const EyeHealthInsights = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {tips.map((tip, index) => {
-              const Icon = tip.icon;
+              const IconComponent = tip.icon;
               return (
                 <motion.div
                   key={index}
@@ -227,7 +272,7 @@ const EyeHealthInsights = () => {
                   className="bg-[#121212] border border-[#333333] rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="bg-[#4CAF50] bg-opacity-20 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-[#4CAF50]" />
+                    {IconComponent && <IconComponent className="w-6 h-6 text-[#4CAF50]" />}
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">{tip.title}</h3>
                   <p className="text-[#B3B3B3] text-sm">{tip.description}</p>
