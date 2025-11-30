@@ -67,7 +67,6 @@ const AdminDashboard = () => {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      // Load all data in parallel
       const [doctorsRes, contactsRes, contactStatsRes, analyticsRes, allBlogsRes] = await Promise.allSettled([
         getDoctors({ limit: 10 }),
         getContacts({ limit: 10 }),
