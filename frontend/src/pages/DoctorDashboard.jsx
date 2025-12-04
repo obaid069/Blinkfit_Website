@@ -7,6 +7,7 @@ import {
   isAuthenticated, 
   getCurrentUser 
 } from '../utils/api';
+import logo from '../assets/logo.png';
 
 const DoctorDashboard = () => {
   const [blogs, setBlogs] = useState([]);
@@ -159,12 +160,15 @@ const DoctorDashboard = () => {
       <div className="bg-gray-900 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Doctor Dashboard</h1>
-              <p className="text-gray-400">Welcome, Dr. {currentUser?.name}</p>
-              {currentUser?.profile?.specialization && (
-                <p className="text-sm text-blue-400">{currentUser.profile.specialization}</p>
-              )}
+            <div className="flex items-center gap-4">
+              <img src={logo} alt="BlinkFit Logo" className="w-12 h-12" />
+              <div>
+                <h1 className="text-2xl font-bold text-white">Doctor Dashboard</h1>
+                <p className="text-gray-400">Welcome, Dr. {currentUser?.name}</p>
+                {currentUser?.profile?.specialization && (
+                  <p className="text-sm text-blue-400">{currentUser.profile.specialization}</p>
+                )}
+              </div>
             </div>
             <button
               onClick={handleLogout}
