@@ -39,7 +39,6 @@ const DoctorRegister = () => {
       return;
     }
 
-    // Validate password length
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
       setIsLoading(false);
