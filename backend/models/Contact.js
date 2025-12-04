@@ -36,7 +36,8 @@ const contactSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['new', 'read', 'replied', 'closed'],
+    // Include both 'responded' and 'replied' for backwards compatibility
+    enum: ['new', 'read', 'responded', 'replied', 'closed'],
     default: 'new',
   },
   priority: {
