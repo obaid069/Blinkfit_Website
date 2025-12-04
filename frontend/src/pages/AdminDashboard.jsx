@@ -31,6 +31,7 @@ import {
   TrendingUp,
   MessageSquare
 } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
@@ -242,9 +243,12 @@ const AdminDashboard = () => {
       {/* Header */}
       <header className="bg-[#1E1E1E] border-b border-[#333333] px-6 py-4">
         <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-blue-400">Admin Dashboard</h1>
-            <p className="text-gray-400">Welcome back, {user?.name}</p>
+          <div className="flex items-center gap-4">
+            <img src={logo} alt="BlinkFit Logo" className="w-12 h-12" />
+            <div>
+              <h1 className="text-2xl font-bold text-blue-400">Admin Dashboard</h1>
+              <p className="text-gray-400">Welcome back, {user?.name}</p>
+            </div>
           </div>
           <button
             onClick={handleLogout}
