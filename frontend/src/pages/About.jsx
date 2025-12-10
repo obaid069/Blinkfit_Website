@@ -46,22 +46,22 @@ const About = () => {
 
   const timeline = [
     {
-      year: '2021',
+      year: '2025',
       title: 'The Vision',
       description: 'Founded with a mission to combat digital eye strain in our increasingly digital world.'
     },
     {
-      year: '2022',
+      year: '2025',
       title: 'AI Development',
       description: 'Developed our proprietary AI algorithm for real-time blink detection and eye tracking.'
     },
     {
-      year: '2023',
+      year: '2025',
       title: 'Beta Launch',
       description: 'Successfully launched beta version with 1,000+ early adopters providing valuable feedback.'
     },
     {
-      year: '2024',
+      year: '2026',
       title: 'Global Expansion',
       description: 'Reached 100,000+ users worldwide and expanded to 50+ countries.'
     }
@@ -313,54 +313,6 @@ const About = () => {
                 </motion.div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {}
-      <section className="py-16 bg-[#1E1E1E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Meet Our Team
-            </h2>
-            <p className="text-xl text-[#B3B3B3] max-w-3xl mx-auto">
-              The passionate experts behind BlinkFit's innovative solutions
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center group"
-              >
-                <div className="relative mb-6">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-48 h-48 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  {member.name}
-                </h3>
-                <p className="text-[#4CAF50] font-medium mb-4">
-                  {member.role}
-                </p>
-                <p className="text-[#B3B3B3] text-sm">
-                  {member.bio}
-                </p>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
