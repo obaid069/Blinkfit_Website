@@ -164,12 +164,12 @@ const About = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                 Our Mission
               </h2>
-              <p className="text-lg text-gray-700 mb-6">
+              <p className="text-lg text-white mb-6">
                 In today's digital world, we spend an average of 7+ hours daily looking at screens. 
                 This unprecedented level of digital exposure is causing widespread eye strain, 
                 dry eyes, and long-term vision problems.
               </p>
-              <p className="text-lg text-[#B3B3B3] mb-6">
+              <p className="text-lg text-white mb-6">
 
                 BlinkFit was created to address this growing health crisis. Using advanced AI 
                 and computer vision technology, we provide real-time monitoring and personalized 
