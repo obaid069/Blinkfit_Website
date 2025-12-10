@@ -240,12 +240,15 @@ const Sidebar = ({ isOpen, setIsOpen, currentSection, onSectionChange }) => {
                 onMouseLeave={() => setHoveredItem(null)}
               >
                 {item.isPage ? (
-                  <Link to={item.path} className="block w-full">
+                  <Link to={item.path} className="block w-full" onClick={() => window.innerWidth < 1024 && setIsOpen(false)}>
                     {itemContent}
                   </Link>
                 ) : (
                   <button 
-                    onClick={() => handleSectionClick(item.id)}
+                    onClick={() => {
+                      handleSectionClick(item.id);
+                      if (window.innerWidth < 1024) setIsOpen(false);
+                    }}
                     className="block w-full"
                   >
                     {itemContent}
