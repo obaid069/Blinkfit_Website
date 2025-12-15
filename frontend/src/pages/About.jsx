@@ -14,13 +14,6 @@ import {
 } from 'lucide-react';
 
 const About = () => {
-  const stats = [
-    { label: 'Happy Users', value: '100K+', icon: Users },
-    { label: 'Eye Breaks Taken', value: '5M+', icon: Eye },
-    { label: 'Countries', value: '50+', icon: Globe },
-    { label: 'Expert Reviews', value: '4.8/5', icon: Award }
-  ];
-
   const values = [
     {
       icon: Heart,
@@ -117,37 +110,6 @@ const About = () => {
               We're on a mission to protect and improve the eye health of millions 
               of people worldwide through innovative AI-powered solutions.
             </motion.p>
-          </div>
-        </div>
-      </section>
-
-      {}
-      <section className="py-16 bg-[#1E1E1E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="text-center"
-                >
-                  <div
-                    className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
-                    style={{ backgroundColor: '#49a74f' }}
-                  >
-                    {IconComponent && <IconComponent className="w-8 h-8 text-white" strokeWidth={2} style={{ strokeWidth: 2 }} />}
-                  </div>
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-[#B3B3B3]">{stat.label}</div>
-                </motion.div>
-              );
-            })}
           </div>
         </div>
       </section>
