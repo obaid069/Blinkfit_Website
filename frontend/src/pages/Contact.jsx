@@ -50,7 +50,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: 'Phone',
-      details: '+1 (555) 123-4567',
+      details: '+923264618934',
       description: 'Mon-Fri from 8am to 5pm.'
     },
     {
@@ -129,7 +129,7 @@ const Contact = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-xl text-[#B3B3B3] max-w-3xl mx-auto"
             >
-              Have questions about BlinkFit? Need help with the app? 
+              Have questions about BlinkFit? Need help with the app?
               We're here to help you on your eye health journey.
             </motion.p>
           </div>
@@ -160,11 +160,10 @@ const Contact = () => {
                         return (
                           <label
                             key={type.value}
-                            className={`relative flex items-center p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
-                              isSelected
+                            className={`relative flex items-center p-3 border rounded-lg cursor-pointer transition-all duration-200 ${isSelected
                                 ? 'border-transparent text-white'
                                 : 'border-[#333333] hover:border-[#4CAF50]'
-                            } ${isSelected ? 'bg-[#49a74f]' : ''}`}
+                              } ${isSelected ? 'bg-[#49a74f]' : ''}`}
                           >
                             <input
                               type="radio"
@@ -195,7 +194,7 @@ const Contact = () => {
                         <input
                           type="text"
                           id="name"
-                          {...register('name', { 
+                          {...register('name', {
                             required: 'Name is required',
                             minLength: { value: 2, message: 'Name must be at least 2 characters' }
                           })}
@@ -241,7 +240,7 @@ const Contact = () => {
                     <input
                       type="text"
                       id="subject"
-                      {...register('subject', { 
+                      {...register('subject', {
                         required: 'Subject is required',
                         minLength: { value: 5, message: 'Subject must be at least 5 characters' }
                       })}
@@ -260,7 +259,7 @@ const Contact = () => {
                     <textarea
                       id="message"
                       rows={6}
-                      {...register('message', { 
+                      {...register('message', {
                         required: 'Message is required',
                         minLength: { value: 10, message: 'Message must be at least 10 characters' }
                       })}

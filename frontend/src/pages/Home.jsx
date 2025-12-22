@@ -22,11 +22,7 @@ import FallbackParticles from '../components/FallbackParticles';
 
 const Home = () => {
   const [featuredBlogs, setFeaturedBlogs] = useState([]);
-  const [stats, setStats] = useState({
-    downloads: '50K+',
-    users: '25K+',
-    satisfaction: '98%'
-  });
+
 
   useEffect(() => {
     const fetchFeaturedBlogs = async () => {
@@ -68,26 +64,7 @@ const Home = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Software Developer',
-      content: 'BlinkFit has completely changed how I work. No more eye strain headaches!',
-      rating: 5
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Graphic Designer',
-      content: 'The AI detection is incredibly accurate. It reminds me to blink when I need it most.',
-      rating: 5
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Content Creator',
-      content: 'My eye health has improved dramatically since using BlinkFit. Highly recommended!',
-      rating: 5
-    }
-  ];
+
 
   return (
     <div className="w-full bg-[#121212] min-h-screen relative">
@@ -138,21 +115,7 @@ const Home = () => {
                   </button>
                 </div>
 
-                {}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-6 border-t border-[#333333]">
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-white">{stats.downloads}</div>
-                    <div className="text-xs text-[#B3B3B3]">Downloads</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-white">{stats.users}</div>
-                    <div className="text-xs text-[#B3B3B3]">Active Users</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-white">{stats.satisfaction}</div>
-                    <div className="text-xs text-[#B3B3B3]">Satisfaction</div>
-                  </div>
-                </div>
+
               </motion.div>
 
               <motion.div
@@ -296,42 +259,7 @@ const Home = () => {
           </div>
         </section>
 
-        {}
-        <section id="testimonials" className="py-20 bg-[#121212] w-full">
-          <div className="px-5 w-full max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                What Our Users Say
-              </h2>
-              <p className="text-lg text-[#B3B3B3]">
-                Join thousands of satisfied users protecting their vision with BlinkFit
-              </p>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-[#1E1E1E] border border-[#333333] rounded-xl p-6 hover:bg-[#252525] hover:border-[#4CAF50] hover:shadow-lg transition-all duration-300 group"
-                >
-                  <div className="flex items-center mb-3">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-[#4CAF50] fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-[#B3B3B3] mb-5 text-base leading-relaxed group-hover:text-[#CCCCCC] transition-colors duration-300">"{testimonial.content}"</p>
-                  <div>
-                    <div className="font-semibold text-white text-base group-hover:text-[#4CAF50] transition-colors duration-300">{testimonial.name}</div>
-                    <div className="text-xs text-[#B3B3B3] group-hover:text-[#CCCCCC] transition-colors duration-300">{testimonial.role}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {}
         {featuredBlogs.length > 0 && (
